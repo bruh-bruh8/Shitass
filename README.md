@@ -1,0 +1,2 @@
+# shitass
+bad console
