@@ -2,6 +2,11 @@
 blame plex
 
 # how to compile (for simpletons) if you dont trust me (BIG RAT)
+
+*get compiler (idk a good onbne idc) and compile*
+
+or (dont do this unless you already have vs)
+
 1. get visual studio with c#
 2. make new console app (with .net FRAMEWORK not .net CORE)
 3. paste from program.cs
