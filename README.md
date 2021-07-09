@@ -1,5 +1,14 @@
 # shitass
 blame plex
 
-# might not work if you are not on windows
-get windows
+# how to compile (for simpletons) if you dont trust me (BIG RAT)
+1. get visual studio with c#
+2. make new console app (with .net FRAMEWORK not .net CORE)
+3. paste from program.cs
+4. press ctrl + f5
+5. wait for it to build
+>if you wanna use it multiple times (you wont)
+6. go to the path it sends in the build log
+7. move to somewhere else
+
+dont complain its bad i alrleady know
