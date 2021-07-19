@@ -1,22 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
+//using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+//using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using System.Net;
-//using System.Runtime;
+using System.Collections.Specialized;
+//using System.Net.NetworkInformation;
+using System.Runtime;
 //using System.Runtime.InteropServices;
+
+// shoutout plex https://github.com/plexthedev
 
 namespace SHITASS
 {
-    class Program
-    {
-        static void Main(string[] args)
+    class Program {
+
+        static void Main()
         {
             Console.Title = ("Shitass");
+
+            Console.WriteLine("loading...");
+
             string user = Environment.UserName;
+
+            string CurrentDir = $"C:\\Users\\{user}\\";
+
+            Console.Clear();
 
             Console.WriteLine("shitass\n");
 
@@ -28,7 +40,9 @@ namespace SHITASS
                 string cmd;
                 cmd = Console.ReadLine();
 
-                switch (cmd)
+                string[] args = cmd.ToLower().Split(' ');
+
+                switch (args[0])
                 {
                     case "cmd":
                         Console.WriteLine(
@@ -38,22 +52,60 @@ namespace SHITASS
                             " \\___ \\|   Y  \\  ||  |  / __ \\_\\___ \\ \\___ \\ \n" +
                             "/____  >___|  /__||__| (____  /____  >____  >\n" +
                             "     \\/     \\/              \\/     \\/     \\/ \n" +
-                            "Shitass Console alpha\\b3\n" +
+                            "Shitass Console alpha-4.0\n" +
                             "made by orange\n"
                             );
                         break;
-
                     case "help":
-                        Console.WriteLine(
-                            "\n" +
+                        if (args.Length <= 1)
+                        {
+                            Console.WriteLine(
+                                 "\n" +
                             "cmd - fancy logo\n" +
-                            "help - help\n" +
+                            "help - type help <command> for a more detailed explanation\n" +
                             "driveinfo - info on yo drives\n" +
                             "sysinfo - info on yo pc\n" +
                             "title - changes window title\n" +
-                            "exit - who the fuck knows\n"
-                            );
+                            "exit - who the fuck knows\n" +
+                            "del - deletes a file\n"
+                                );
+                        }
+                        else
+                        {
+                            switch (args[1])
+                            {
+                                case "cmd":
+                                    Console.WriteLine("cmd\nshows ascii logo and version\n");
+                                    break;
+
+                                case "help":
+                                    Console.WriteLine("no\n");
+                                    break;
+
+                                case "driveinfo":
+                                    Console.WriteLine("driveinfo\nshows info on drives and removable media\n");
+                                    break;
+
+                                case "sysinfo":
+                                    Console.WriteLine("sysinfo\nshows info on your system\n");
+                                    break;
+
+                                case "title":
+                                    Console.WriteLine("title\nchanges the title of the command prompt\n");
+                                    break;
+
+                                case "exit":
+                                    Console.WriteLine("exit\nexits the app\n");
+                                    break;
+
+                                case "del":
+                                    Console.WriteLine("del\ndeletes a file, folders not supported\n");
+                                    break;
+                            }
+
+                        }
                         break;
+
 
                     case "driveinfo":
 
@@ -72,14 +124,16 @@ namespace SHITASS
                                 Console.WriteLine("something went wrong");
                             }
                         }
+                        Console.Clear();
+                        Console.Write(user + "> driveinfo\n");
                         Console.WriteLine(drives);
                         break;
 
                     case "sysinfo":
 
-                    string systemi = "";
+                        string sysi = "";
 
-                    Console.WriteLine("fetching info...");
+                        Console.WriteLine("fetching info...");
                         // ill make this better later
                         var OSVersion = Environment.OSVersion;
                         var ProcessorArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
@@ -93,20 +147,64 @@ namespace SHITASS
 
                         try
                         {
-                            systemi += $"\nOS Version: {OSVersion}\n [Processor Architecture: {ProcessorArchitecture}\n [Processor Identifier: {ProcessorIdentifier}\n [Processor Level: {ProcessorLevel}\n [System Directory: {SystemDirectory}\n [Processor Count: {ProcessorCount}\n [User Domain Name: {UserDomainName}\n [Username: {UserName}\n [Version: {Version}\n";
+                            sysi += $"\nOS Version: {OSVersion}\n [Processor Architecture: {ProcessorArchitecture}\n [Processor Identifier: {ProcessorIdentifier}\n [Processor Level: {ProcessorLevel}\n [System Directory: {SystemDirectory}\n [Processor Count: {ProcessorCount}\n [User Domain Name: {UserDomainName}\n [Username: {UserName}\n [Version: {Version}\n";
                         }
                         catch
                         {
                             Console.WriteLine("something went wrong");
                         }
-                    Console.WriteLine(systemi);
-                    break;
+                        Console.WriteLine(sysi);
+                        break;
+
+                    case "del":
+
+                        if (args.Length <= 1)
+                        {
+                            Console.WriteLine("Usage: del <path>");
+                            break;
+                        }
+
+                        string DelPath = args[1];
+
+                        if (DelPath.ToLower().Contains("c:\\windows"))
+                        {
+                            Console.Write("file MIGHT be a system file, are you sure you want to continue? (y/n)");
+
+                            string SysfileConfirm = Console.ReadLine();
+
+                            if (SysfileConfirm == "y") {
+                                Console.WriteLine("you might have to run as administrator to delete this file\n");
+                            } else
+                            {
+                                break;
+                            }
+                        }
+
+                        if (File.Exists(DelPath))
+                        {
+                            try
+                            {
+                                File.Delete(DelPath);
+                                Console.WriteLine($"successfully deleted {DelPath}");
+                                break;
+                            }
+                            catch
+                            {
+                                   // File.Delete(CurrentDir + "\\" + args[1]);
+                                Console.WriteLine("failed to delete file, make sure another app isnt using it (also folders are not supported)");
+                            }
+
+                        } else
+                        {
+                            Console.WriteLine("file doesnt exist bruh..");
+                        }
+
+                        break;
 
                     case "title":
-                        Console.Write("new window title: ");
-
                         string wintitle;
-                        wintitle = Console.ReadLine();
+
+                        wintitle = args[1];
 
                         if (wintitle == "")
                         {
@@ -115,6 +213,7 @@ namespace SHITASS
                         }
 
                         Console.Title = (wintitle);
+                        Console.WriteLine($"New window title: {wintitle}\n");
                         break;
 
                     case "":
@@ -125,21 +224,13 @@ namespace SHITASS
                         Environment.Exit(0);
                         break;
 
-                    case "quit":
-                        Environment.Exit(0);
-                        break;
-
-                    case "stop":
-                        Environment.Exit(0);
-                        break;
-
                     default:
                         Console.WriteLine("eric command fail");
                         break;
-                }
-
             }
+        }
 
+        
+            }
         }
     }
-}
