@@ -8,16 +8,21 @@ using System.IO;
 using System.Threading;
 using System.Net;
 using System.Collections.Specialized;
-//using System.Net.NetworkInformation;
+using System.Net.NetworkInformation;
 using System.Runtime;
 //using System.Runtime.InteropServices;
 
 // shoutout plex https://github.com/plexthedev
 
+/* todo
+ * 
+ * make settings file work
+ * 
+ */
+
 namespace SHITASS
 {
     class Program {
-
         static void Main()
         {
             Console.Title = ("Shitass");
@@ -25,6 +30,34 @@ namespace SHITASS
             Console.WriteLine("loading...");
 
             string user = Environment.UserName;
+
+            string first = "C:\\Users\\" + user + "\\AppData\\Local\\Temp\\.SHITASS";
+            // for sysinfo
+                var OSVersion = Environment.OSVersion;
+                var ProcessorArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
+                var ProcessorIdentifier = Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER");
+                var ProcessorLevel = Environment.GetEnvironmentVariable("PROCESSOR_LEVEL");
+                var SystemDirectory = Environment.SystemDirectory;
+                var ProcessorCount = Environment.ProcessorCount;
+                var UserDomainName = Environment.UserDomainName;
+                var UserName = Environment.UserName;
+                var Version = Environment.Version;
+
+            // wtf rat confirmed!
+
+            bool firstrun = !File.Exists(first);
+
+            if (firstrun == true)
+            {
+                try
+                {
+                    File.Create(first);
+                } catch
+                {
+                    Console.WriteLine($"failed to create file at {first}, try running as administrator\n");
+                    Thread.Sleep(7500);
+                }
+            }
 
             string CurrentDir = $"C:\\Users\\{user}\\";
 
@@ -134,16 +167,6 @@ namespace SHITASS
                         string sysi = "";
 
                         Console.WriteLine("fetching info...");
-                        // ill make this better later
-                        var OSVersion = Environment.OSVersion;
-                        var ProcessorArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
-                        var ProcessorIdentifier = Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER");
-                        var ProcessorLevel = Environment.GetEnvironmentVariable("PROCESSOR_LEVEL");
-                        var SystemDirectory = Environment.SystemDirectory;
-                        var ProcessorCount = Environment.ProcessorCount;
-                        var UserDomainName = Environment.UserDomainName;
-                        var UserName = Environment.UserName;
-                        var Version = Environment.Version;
 
                         try
                         {
@@ -201,7 +224,23 @@ namespace SHITASS
 
                         break;
 
+                    case "ping":
+
+                        if (args.Length <= 1)
+                        {
+                            Console.WriteLine("Usage: ping <ip or website>");
+                            break;
+                        }
+                        ping(args[1]);
+                        break;
+
                     case "title":
+
+                        if (args.Length <= 1)
+                        {
+                            Console.WriteLine("Usage: title <new window title>");
+                            break;
+                        }
                         string wintitle;
 
                         wintitle = args[1];
@@ -225,12 +264,32 @@ namespace SHITASS
                         break;
 
                     default:
-                        Console.WriteLine("eric command fail");
+                        Console.WriteLine("wtf you saying bruh..");
                         break;
             }
         }
+    }
+        public static void ping(string host)
+        {
+            Ping p = new Ping();
+            PingReply r;
+            try
+            {
+                r = p.Send(host);
 
-        
+                if (r.Status == IPStatus.Success)
+                {
+                    Console.WriteLine("Ping to " + host.ToString() + "\n[" + r.Address.ToString() + "]\n" + "Status: Successful\n"
+                       + "Response delay = " + r.RoundtripTime.ToString() + " ms\n");
+                }
+                else
+                {
+                    Console.WriteLine($"failed to ping {host}");
+                }
+            } catch
+            {
+                Console.WriteLine($"failed to ping {host}");
+            }
             }
         }
     }
