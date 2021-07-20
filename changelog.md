@@ -17,4 +17,13 @@
 
 > *Added ping command*
 
+## Build 6
+*7/20/21*
+
+> *Added url shortener*
+
+> *Added time command*
+
+> *Added coinflip*
+
 ...
