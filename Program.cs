@@ -100,7 +100,8 @@ namespace SHITASS
                             "sysinfo - info on yo pc\n" +
                             "title - changes window title\n" +
                             "exit - who the fuck knows\n" +
-                            "del - deletes a file\n"
+                            "del - deletes a file\n" +
+                            "ping - pings an ip or website"
                                 );
                         }
                         else
@@ -133,6 +134,10 @@ namespace SHITASS
 
                                 case "del":
                                     Console.WriteLine("del\ndeletes a file, folders not supported\n");
+                                    break;
+
+                                case "ping":
+                                    Console.WriteLine("ping\npings an ip or website and shows info on the ping");
                                     break;
                             }
 
