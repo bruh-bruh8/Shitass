@@ -85,7 +85,7 @@ namespace SHITASS
                             " \\___ \\|   Y  \\  ||  |  / __ \\_\\___ \\ \\___ \\ \n" +
                             "/____  >___|  /__||__| (____  /____  >____  >\n" +
                             "     \\/     \\/              \\/     \\/     \\/ \n" +
-                            "Shitass Console alpha-4.0\n" +
+                            "Shitass Console Build 5\n" +
                             "made by orange\n"
                             );
                         break;
