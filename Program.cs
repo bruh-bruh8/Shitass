@@ -34,7 +34,8 @@ namespace SHITASS
 
             string user = Environment.UserName;
 
-            string first = "C:\\Users\\" + user + "\\AppData\\Local\\Temp\\.SHITASS";
+            string first = "C:\\Users\\" + user + "\\AppData\\Local\\SHITASS\\";
+            string setfile = "C:\\Users\\" + user + "\\AppData\\Local\\SHITASS\\.SHITASS";
             // for sysinfo
             var OSVersion = Environment.OSVersion;
             var ProcessorArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
@@ -48,17 +49,27 @@ namespace SHITASS
 
             // wtf rat confirmed!
 
-            bool firstrun = !File.Exists(first);
-
+            bool firstrun = (!Directory.Exists(first) || !File.Exists(setfile));
+            
             if (firstrun)
             {
+
+                if (new Random().Next(0, 2048) == '5')
+                {
+                    Console.WriteLine("there are (5) hot MILFs in your area that want sex! CLICK HERE to chat!");
+                    Thread.Sleep(2100000000);
+                }
+
+                Console.WriteLine($"this is your first time running the program, so we're creating some files.\nall files will be stored at {first}");
+                Thread.Sleep(3100);
                 try
                 {
-                    File.Create(first);
+                    Directory.CreateDirectory(first);
+                    File.Create(setfile);
                 }
                 catch
                 {
-                    Console.WriteLine($"failed to create file at {first}, try running as administrator\n");
+                    Console.WriteLine($"failed to create files at {first}, try running as administrator\n");
                     Thread.Sleep(7500);
                 }
             }
@@ -89,7 +100,7 @@ namespace SHITASS
                             " \\___ \\|   Y  \\  ||  |  / __ \\_\\___ \\ \\___ \\ \n" +
                             "/____  >___|  /__||__| (____  /____  >____  >\n" +
                             "     \\/     \\/              \\/     \\/     \\/ \n" +
-                            "Shitass Console Build 6\n" +
+                            "Shitass Console Build 7\n" +
                             "made by orange\n"
                             );
                         break;
@@ -163,7 +174,6 @@ namespace SHITASS
                         }
                         break;
 
-
                     case "driveinfo":
 
                         string drives = "";
@@ -213,24 +223,28 @@ namespace SHITASS
 
                         string DelPath = args[1];
 
-                        if (DelPath.ToLower().Contains("c:\\windows"))
+                        
+                        // yes ik this is inefficient but idc
+                        if (File.Exists(DelPath) || Directory.Exists(DelPath))
                         {
-                            Console.Write("file MIGHT be a system file, are you sure you want to continue? (y/n)");
 
-                            string SysfileConfirm = Console.ReadLine();
-
-                            if (SysfileConfirm == "y")
+                            if (DelPath.ToLower().Contains("c:\\windows"))
                             {
-                                Console.WriteLine("you might have to run as administrator to delete this file\n");
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
+                                Console.Write("file MIGHT be a system file, are you sure you want to continue? (y/n)");
 
-                        if (File.Exists(DelPath))
-                        {
+                                ConsoleKeyInfo SysfileConfirm = Console.ReadKey();
+
+                                if (SysfileConfirm.Key == ConsoleKey.Y)
+                                {
+                                    Console.WriteLine("you might have to run as administrator to delete this file\n");
+                                    Thread.Sleep(100);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
                             try
                             {
                                 File.Delete(DelPath);
@@ -243,6 +257,7 @@ namespace SHITASS
                                 try
                                 {
                                     Directory.Delete(DelPath);
+                                    Console.WriteLine($"successfully deleted {DelPath}");
                                 }
                                 catch
                                 {
@@ -295,28 +310,14 @@ namespace SHITASS
                             Console.WriteLine("Usage: shorten <url>");
                             break;
                         }
-                        if (args[2] == "/alt")
-                        {
                             try
                             {
-                                await shorten(args[1], true);
+                                await Shorten(args[1], false);
                             }
                             catch (Exception e)
                             {
                                 Console.WriteLine(e.Message);
                             }
-                        }
-                        else
-                        {
-                            try
-                            {
-                                await shorten(args[1], false);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e.Message);
-                            }
-                        }
 
                         break;
 
@@ -354,26 +355,29 @@ namespace SHITASS
         {
             Ping p = new Ping();
             PingReply r;
-            try
+            if (!host.Contains(".") || host == "")
             {
-                r = p.Send(host);
-
-                if (r.Status == IPStatus.Success)
-                {
-                    Console.WriteLine("Ping to " + host.ToString() + "\n[" + r.Address.ToString() + "]\n" + "Status: Successful\n"
-                       + "Response delay = " + r.RoundtripTime.ToString() + " ms\n");
-                }
-                else
-                {
-                    Console.WriteLine($"failed to ping {host}");
-                }
+                Console.WriteLine("thats not an ip or url...");
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine($"failed to ping {host}\nerror: " + e.Message);
+                try
+                {
+                    r = p.Send(host);
+
+                    if (r.Status == IPStatus.Success)
+                    {
+                        Console.WriteLine("Ping to " + host.ToString() + "\n[" + r.Address.ToString() + "]\n" + "Status: Successful\n"
+                           + "Response delay: " + r.RoundtripTime.ToString() + " ms\n");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"failed to ping {host}\nerror: " + e.Message);
+                }
             }
         }
-        public static async Task<string> shorten(string url, bool alt)
+        public static async Task<string> Shorten(string url, bool alt)
         {
             var client = new HttpClient();
             string uri;
@@ -397,4 +401,3 @@ namespace SHITASS
         }
     }
 }
-// kys
