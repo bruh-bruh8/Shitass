@@ -25,5 +25,9 @@
 > *Added time command*
 
 > *Added coinflip*
+#### Build 6.1
+*8/19/21*
+
+> *Fixed sysinfo always saying NT 6.0 on 8.1+*
 
 ...
