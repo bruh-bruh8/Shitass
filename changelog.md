@@ -30,4 +30,9 @@
 
 > *Fixed sysinfo always saying NT 6.0 on 8.1+*
 
+#### Build 6.2
+*1/10/22*
+
+> *Added v.gd as an alternate link shortener*
+
 ...
