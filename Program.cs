@@ -12,6 +12,7 @@ using System.Net.NetworkInformation;
 using System.Runtime;
 using System.Net.Http;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 //using System.Runtime.InteropServices;
 
 // shoutout plex https://github.com/plexthedev
@@ -34,8 +35,6 @@ namespace SHITASS
 
             string user = Environment.UserName;
 
-            string first = "C:\\Users\\" + user + "\\AppData\\Local\\SHITASS\\";
-            string setfile = "C:\\Users\\" + user + "\\AppData\\Local\\SHITASS\\.SHITASS";
             // for sysinfo
             var OSVersion = Environment.OSVersion;
             var ProcessorArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
@@ -46,33 +45,6 @@ namespace SHITASS
             var UserDomainName = Environment.UserDomainName;
             var UserName = Environment.UserName;
             var Version = Environment.Version;
-
-            // wtf rat confirmed!
-
-            bool firstrun = (!Directory.Exists(first) || !File.Exists(setfile));
-            
-            if (firstrun)
-            {
-
-                if (new Random().Next(0, 2048) == '5')
-                {
-                    Console.WriteLine("there are (5) hot MILFs in your area that want sex! CLICK HERE to chat!");
-                    Thread.Sleep(2100000000);
-                }
-
-                Console.WriteLine($"this is your first time running the program, so we're creating some files.\nall files will be stored at {first}");
-                Thread.Sleep(3100);
-                try
-                {
-                    Directory.CreateDirectory(first);
-                    File.Create(setfile);
-                }
-                catch
-                {
-                    Console.WriteLine($"failed to create files at {first}, try running as administrator\n");
-                    Thread.Sleep(7500);
-                }
-            }
 
             string CurrentDir = $"C:\\Users\\{user}\\";
 
@@ -100,7 +72,7 @@ namespace SHITASS
                             " \\___ \\|   Y  \\  ||  |  / __ \\_\\___ \\ \\___ \\ \n" +
                             "/____  >___|  /__||__| (____  /____  >____  >\n" +
                             "     \\/     \\/              \\/     \\/     \\/ \n" +
-                            "Shitass Console Build 7\n" +
+                            "Shitass Console [Build 7]\n" +
                             "made by orange\n"
                             );
                         break;
@@ -119,7 +91,8 @@ namespace SHITASS
                             "ping - pings an ip or website\n" +
                             "shorten - shortens a url\n" +
                             "time - prints the time\n" +
-                            "coin - flips a coin\n"
+                            "coin - flips a coin\n" +
+                            "cl - clears the screen"
                                 );
                         }
                         else
@@ -135,7 +108,7 @@ namespace SHITASS
                                     break;
 
                                 case "driveinfo":
-                                    Console.WriteLine("driveinfo\nshows info on drives and removable media\n");
+                                    Console.WriteLine("driveinfo\nshows info on drives and removable media (\n");
                                     break;
 
                                 case "sysinfo":
@@ -169,6 +142,10 @@ namespace SHITASS
                                 case "coin":
                                     Console.WriteLine("coin\nflips a coin and prints heads or tails");
                                     break;
+
+                                case "cl":
+                                    Console.WriteLine("cl\nclears the screen");
+                                    break;
                             }
 
                         }
@@ -184,7 +161,7 @@ namespace SHITASS
                         {
                             try
                             {
-                                drives += $"\nDrive: {DriveInfo1.Name}\n [VolumeLabel: {DriveInfo1.VolumeLabel}\n [Type: {DriveInfo1.DriveType}\n [Format: {DriveInfo1.DriveFormat}\n [Total Size: {DriveInfo1.TotalSize} bytes\n [Free Space: {DriveInfo1.AvailableFreeSpace} bytes\n";
+                                drives += $"\nDrive: {DriveInfo1.Name}\n [Volume Label: {DriveInfo1.VolumeLabel}\n [Type: {DriveInfo1.DriveType}\n [Format: {DriveInfo1.DriveFormat}\n [Total Size: {DriveInfo1.TotalSize} bytes\n [Free Space: {DriveInfo1.AvailableFreeSpace} bytes\n";
                             }
                             catch
                             {
@@ -223,7 +200,7 @@ namespace SHITASS
 
                         string DelPath = args[1];
 
-                        
+
                         // yes ik this is inefficient but idc
                         if (File.Exists(DelPath) || Directory.Exists(DelPath))
                         {
@@ -310,6 +287,15 @@ namespace SHITASS
                             Console.WriteLine("Usage: shorten <url>");
                             break;
                         }
+                        if (args.Length >= 3) {
+                            if (args[2] == "-alt")
+                            {
+                                await Shorten(args[1], true);
+                                break;
+                            }
+                        }
+                        else
+                        {
                             try
                             {
                                 await Shorten(args[1], false);
@@ -318,7 +304,7 @@ namespace SHITASS
                             {
                                 Console.WriteLine(e.Message);
                             }
-
+                        }
                         break;
 
                     case "coin":
@@ -341,6 +327,10 @@ namespace SHITASS
                         Console.WriteLine("");
                         break;
 
+                    case "cl":
+                        Console.Clear();
+                        break;
+
                     case "exit":
                         Environment.Exit(0);
                         break;
@@ -355,7 +345,7 @@ namespace SHITASS
         {
             Ping p = new Ping();
             PingReply r;
-            if (!host.Contains(".") || host == "")
+            if (!(host == "localhost") && !host.Contains(".") || host == "")
             {
                 Console.WriteLine("thats not an ip or url...");
             }
@@ -363,8 +353,14 @@ namespace SHITASS
             {
                 try
                 {
-                    r = p.Send(host);
-
+                    if (host == "localhost")
+                    {
+                        r = p.Send("127.0.0.1");
+                    }
+                    else
+                    {
+                        r = p.Send(host);
+                    }
                     if (r.Status == IPStatus.Success)
                     {
                         Console.WriteLine("Ping to " + host.ToString() + "\n[" + r.Address.ToString() + "]\n" + "Status: Successful\n"
@@ -397,7 +393,8 @@ namespace SHITASS
             }
             Console.WriteLine("\n" + response + "\n");
             return response;
-
         }
+
     }
 }
+// come on i gotta have exactly 400 lines
