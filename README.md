@@ -1,2 +1,2 @@
-# shitass
-Command prompt wannabe
+# oConsole
+Command prompt wannabe.
