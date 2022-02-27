@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using System.Net;
+using System.Web;
 using System.Net.NetworkInformation;
 using System.Net.Http;
 using NeoSmart.Utils;
@@ -24,7 +25,6 @@ namespace SHITASS
         static async Task Main()
         {
             Console.Title = ("Loading...");
-
             Console.WriteLine("loading...");
 
             string user = Environment.UserName;
@@ -405,37 +405,6 @@ namespace SHITASS
             Console.WriteLine("\n" + response + "\n");
             return response;
         }
-        public static void Base64(string inp, bool ed)
-        {
-            switch (ed)
-            {
-                case true:
-                    try
-                    {
-                        string encodedStr = Convert.ToBase64String(Encoding.UTF8.GetBytes(inp));
-                        Console.WriteLine(encodedStr);
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("There was an error: " + e.Message);
-                        break;
-                    }
-                case false:
-                    try
-                    {
-                        byte[] decodedStr = UrlBase64.Decode(inp);
-                        string ihatemylife = Encoding.UTF8.GetString(decodedStr);
-                        Console.WriteLine(ihatemylife);
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("There was an error:" + e.Message);
-                        break;
-                    }
-            }
-        }
         public static void RefreshWinTitle()
         {
             while (true)
@@ -448,3 +417,4 @@ namespace SHITASS
         }
     }
 }
+// ye
