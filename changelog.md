@@ -1,21 +1,30 @@
-## Build 3
-*7/8/21*
+## Build 8 (Upcoming)
+*2/27/22*
 
-> *Made the repo*
+> *Rebranded console (RIP shitass)*
 
-> *Added system info command*
+> *Removed time command due to it being useless*
 
-## Build 4
-*7/18/21*
+> *Fixed title bug*
 
-> *Added del command*
+> *Reformatted changelog*
 
-> *Made help better*
+## Build 7
+*2/26/22*
 
-## Build 5
-*7/20/21*
+> *Added IPv6 support to ping command*
 
-> *Added ping command*
+> *Added date and time in the window title*
+
+#### Build 6.2
+*1/10/22*
+
+> *Added v.gd as an alternate link shortener*
+
+#### Build 6.1
+*8/19/21*
+
+> *Fixed sysinfo always saying NT 6.0 on 8.1+ (thx plex for pointing this out)*
 
 ## Build 6
 *7/20/21*
@@ -25,29 +34,30 @@
 > *Added time command*
 
 > *Added coinflip*
-#### Build 6.1
-*8/19/21*
 
-> *Fixed sysinfo always saying NT 6.0 on 8.1+*
+## Build 5
+*7/20/21*
 
-#### Build 6.2
-*1/10/22*
+> *Added ping command*
 
-> *Added v.gd as an alternate link shortener*
+## Build 4
+*7/18/21*
 
-## Build 7
-*2/26/22*
+> *Added del command*
 
-> *Added IPv6 support to ping command*
+> *Made help better*
 
-> *Added date and time in the window title*
+## Build 3
+*7/8/21*
 
-# Coming soon...
+> *Made the repo*
 
-> *Base64 converter*
+> *Added system info command*
 
 # Known issues
 
 > *URLs that contain &, ;, #, etc. won't work with the shorten command*
 
-> *Title command will not work due to title update*
+# Coming soon...
+
+> *Base64 converter*
