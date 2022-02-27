@@ -49,3 +49,5 @@
 # Known issues
 
 > *URLs that contain &, ;, #, etc. won't work with the shorten command*
+
+> *Title command will not work due to title update*
