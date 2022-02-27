@@ -43,4 +43,9 @@
 > *Added date and time in the window title*
 
 # Coming soon...
+
 > *Base64 converter*
+
+# Known issues
+
+> *URLs that contain &, ;, #, etc. won't work with the shorten command*
