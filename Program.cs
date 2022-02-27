@@ -1,19 +1,13 @@
 using System;
-//using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-//using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using System.Net;
-using System.Collections.Specialized;
 using System.Net.NetworkInformation;
-using System.Runtime;
 using System.Net.Http;
-using System.Diagnostics;
-using Newtonsoft.Json.Linq;
-//using System.Runtime.InteropServices;
+using NeoSmart.Utils;
+
 
 // shoutout plex https://github.com/plexthedev
 
@@ -29,7 +23,7 @@ namespace SHITASS
     {
         static async Task Main()
         {
-            Console.Title = ("Shitass");
+            Console.Title = ("Loading...");
 
             Console.WriteLine("loading...");
 
@@ -45,12 +39,13 @@ namespace SHITASS
             var UserDomainName = Environment.UserDomainName;
             var UserName = Environment.UserName;
             var Version = Environment.Version;
-
             string CurrentDir = $"C:\\Users\\{user}\\";
-
+            Thread thread1 = new Thread(Program.RefreshWinTitle);
+            thread1.Start();
             Console.Clear();
 
             Console.WriteLine("shitass\n");
+            
 
             while (true)
             {
@@ -296,6 +291,7 @@ namespace SHITASS
                         }
                         else
                         {
+                            
                             try
                             {
                                 await Shorten(args[1], false);
@@ -306,6 +302,8 @@ namespace SHITASS
                             }
                         }
                         break;
+
+                    
 
                     case "coin":
                         switch (new Random().Next(0, 2))
@@ -321,6 +319,19 @@ namespace SHITASS
 
                     case "time":
                         Console.WriteLine(DateTime.Now);
+                        break;
+                    // vvv testing vvv
+                    case "timever":
+                        var parse = (DateTime.Today);
+                        string ParseString = (Convert.ToString(parse));
+                        string Date = ParseString[0] + "" /* prevents "cant convert type int to string" errors */ + ParseString[1] + ParseString[2] + ParseString[3] + ParseString[4] + ParseString[5] + ParseString[6] + ParseString[7];
+                        string[] verArray = (Date.Split('/'));
+                        if (verArray[0].Length < 2)
+                        {
+                            verArray[0] = "0" + verArray[0];
+                        }
+                        string Final = verArray[0] + verArray[1] + verArray[2];
+                        Console.WriteLine("Build #" + Final);
                         break;
 
                     case "":
@@ -345,7 +356,7 @@ namespace SHITASS
         {
             Ping p = new Ping();
             PingReply r;
-            if (!(host == "localhost") && !host.Contains(".") || host == "")
+            if (!(host == "localhost") && !host.Contains(".") && !host.Contains(":") || host == "")
             {
                 Console.WriteLine("thats not an ip or url...");
             }
@@ -394,7 +405,46 @@ namespace SHITASS
             Console.WriteLine("\n" + response + "\n");
             return response;
         }
+        public static void Base64(string inp, bool ed)
+        {
+            switch (ed)
+            {
+                case true:
+                    try
+                    {
+                        string encodedStr = Convert.ToBase64String(Encoding.UTF8.GetBytes(inp));
+                        Console.WriteLine(encodedStr);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("There was an error: " + e.Message);
+                        break;
+                    }
+                case false:
+                    try
+                    {
+                        byte[] decodedStr = UrlBase64.Decode(inp);
+                        string ihatemylife = Encoding.UTF8.GetString(decodedStr);
+                        Console.WriteLine(ihatemylife);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("There was an error:" + e.Message);
+                        break;
+                    }
+            }
+        }
+        public static void RefreshWinTitle()
+        {
+            while (true)
+            {
+                var Time = (DateTime.Now);
+                string ParseString = (Convert.ToString(Time));
+                Console.Title = ("Shitass | " + ParseString);
 
+            } 
+        }
     }
 }
-// come on i gotta have exactly 400 lines
