@@ -38,4 +38,5 @@
 > *Added IPv6 support to ping command*
 > *Added date and time in the window title*
 
-...
+# Coming soon...
+> *Base64 converter*
