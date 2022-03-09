@@ -7,14 +7,6 @@ using System.Net.NetworkInformation;
 using System.Net.Http;
 using System.Text;
 
-// shoutout plex https://github.com/plexthedev
-
-/* todo
- * 
- * base64 converter
- * 
- */
-
 namespace oConsole
 {
     class Program
@@ -54,9 +46,7 @@ namespace oConsole
             Thread WinThread = new Thread(Program.RefreshWinTitle);
             WinThread.Start();
             Console.Clear();
-
             Console.WriteLine("oConsole\n");
-            
             while (true)
             {
 
@@ -165,9 +155,9 @@ namespace oConsole
                             {
                                 drives += $"\nDrive: {DriveInfo1.Name}\n [Volume Label: {DriveInfo1.VolumeLabel}\n [Type: {DriveInfo1.DriveType}\n [Format: {DriveInfo1.DriveFormat}\n [Total Size: {DriveInfo1.TotalSize} bytes\n [Free Space: {DriveInfo1.AvailableFreeSpace} bytes\n";
                             }
-                            catch
+                            catch (Exception e)
                             {
-                                Console.WriteLine("something went wrong");
+                                Console.WriteLine("something went wrong: " + e);
                             }
                         }
                         Console.Clear();
@@ -423,183 +413,8 @@ namespace oConsole
             {
                 var Time = (DateTime.Now);
                 Console.Title = "oConsole | " + Time;
+                Thread.Sleep(2);
             } 
         }
     }
 }
-                            if (DelPath.ToLower().Contains("c:\\windows"))
-                            {
-                                Console.Write("file MIGHT be a system file, are you sure you want to continue? (y/n)");
-
-                                ConsoleKeyInfo SysfileConfirm = Console.ReadKey();
-
-                                if (SysfileConfirm.Key == ConsoleKey.Y)
-                                {
-                                    Console.WriteLine("you might have to run as administrator to delete this file\n");
-                                    Thread.Sleep(100);
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-
-                            try
-                            {
-                                File.Delete(DelPath);
-                                Console.WriteLine($"successfully deleted {DelPath}");
-                                break;
-                            }
-                            catch
-                            {
-                                // File.Delete(CurrentDir + "\\" + args[1]);
-                                try
-                                {
-                                    Directory.Delete(DelPath);
-                                    Console.WriteLine($"successfully deleted {DelPath}");
-                                }
-                                catch
-                                {
-                                    Console.WriteLine("failed to delete file or folder, make sure another app isnt using it");
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            Console.WriteLine("file doesnt exist bruh..");
-                        }
-
-                        break;
-
-                    case "ping":
-
-                        if (args.Length <= 1)
-                        {
-                            Console.WriteLine("Usage: ping <ip or website>");
-                            break;
-                        }
-                        ping(args[1]);
-                        break;
-
-                    case "title":
-
-                        if (args.Length <= 1)
-                        {
-                            Console.WriteLine("Usage: title <new window title>");
-                            break;
-                        }
-                        string wintitle;
-
-                        wintitle = args[1];
-
-                        if (wintitle == "")
-                        {
-                            Console.WriteLine("nothing provided");
-                            break;
-                        }
-
-                        Console.Title = (wintitle);
-                        Console.WriteLine($"New window title: {wintitle}\n");
-                        break;
-
-                    case "shorten":
-                        if (args.Length <= 1)
-                        {
-                            Console.WriteLine("Usage: shorten <url>");
-                            break;
-                        }
-                        if (args.Length >= 3) {
-                            if (args[2] == "-alt")
-                            {
-                                await Shorten(args[1], true);
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            
-                            try
-                            {
-                                await Shorten(args[1], false);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e.Message);
-                            }
-                        }
-                        break;
-
-                    
-
-                    case "coin":
-                        switch (new Random().Next(0, 2))
-                        {
-                            case 0:
-                                Console.WriteLine("Heads");
-                                break;
-                            case 1:
-                                Console.WriteLine("Tails");
-                                break;
-                        }
-                        break;
-
-                    case "time":
-                        Console.WriteLine(DateTime.Now);
-                        break;
-                    // vvv testing vvv
-                    case "timever":
-                        var parse = (DateTime.Today);
-                        string ParseString = (Convert.ToString(parse));
-                        string Date = ParseString[0] + "" /* prevents "cant convert type int to string" errors */ + ParseString[1] + ParseString[2] + ParseString[3] + ParseString[4] + ParseString[5] + ParseString[6] + ParseString[7];
-                        string[] verArray = (Date.Split('/'));
-                        if (verArray[0].Length < 2)
-                        {
-                            verArray[0] = "0" + verArray[0];
-                        }
-                        string Final = verArray[0] + verArray[1] + verArray[2];
-                        Console.WriteLine("Build #" + Final);
-                        break;
-
-                    case "":
-                        Console.WriteLine("");
-                        break;
-
-                    case "cl":
-                        Console.Clear();
-                        break;
-
-                    case "exit":
-                        Environment.Exit(0);
-                        break;
-
-                    default:
-                        Console.WriteLine("wtf you saying bruh..");
-                        break;
-                }
-            }
-        }
-        public static void ping(string host)
-        {
-            Ping p = new Ping();
-            PingReply r;
-            if (!(host == "localhost") && !host.Contains(".") && !host.Contains(":") || host == "")
-            {
-                Console.WriteLine("thats not an ip or url...");
-            }
-            else
-            {
-                try
-                {
-                    if (host == "localhost")
-                    {
-                        r = p.Send("127.0.0.1");
-                    }
-                    else
-                    {
-                        r = p.Send(host);
-                    }
-                    if (r.Status == IPStatus.Success)
-                    {
-                        Console.WriteLine("Ping to " + host.ToString() + "\n[" + r.Address.ToString() + "]\n" + "Status: Successful\n"
-                           + "Response delay
