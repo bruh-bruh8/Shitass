@@ -30,7 +30,7 @@
 #### Build 6.1
 *8/19/21*
 
-> */ Fixed sysinfo always saying NT 6.0 on 8.1+ (thx [plex](github.com/plexthedev) for pointing this out*
+> */ Fixed sysinfo always saying NT 6.0 on 8.1+ (thx [plex](https://www.github.com/plexthedev) for pointing this out)*
 
 ## Build 6
 *7/20/21*
