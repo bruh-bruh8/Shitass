@@ -1,3 +1,4 @@
-# oConsole
+# SHITASS
 Command prompt wannabe
-old acc banned:(
+
+rip oranfgde </3
