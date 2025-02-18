@@ -1,52 +1,42 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
-using System.Threading;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Http;
 using System.Text;
+using System.Linq;
 
-namespace oConsole
+namespace shitass
 {
     class Program
     {
         static async Task Main()
         {
-            Console.Title = ("Loading...");
             Console.WriteLine("loading...");
-
             string user = Environment.UserName;
-            string SettingsPath = $@"C:\Users\{user}\AppData\Roaming\oConsole\settings.txt";
-            string FilePath = $@"C:\Users\{user}\AppData\Roaming\oConsole\";
-            string settings = "wintime=1" + Environment.NewLine + "wintitle=oConsole";
-            if (!File.Exists(SettingsPath))
+            string SettingsPath = $@"C:\Users\{user}\AppData\Roaming\Shitass\settings.txt";
+            string FilePath = $@"C:\Users\{user}\AppData\Roaming\Shitass\";
+            if (!System.IO.File.Exists(SettingsPath))
             {
                 if (!Directory.Exists(FilePath))
                 {
                     Directory.CreateDirectory(FilePath);
                 }
-                var oFile = File.Create(SettingsPath);
-                oFile.Close();
-                File.WriteAllText(SettingsPath, settings, Encoding.UTF8);
-                
-            }
+                var settingfile = System.IO.File.Create(SettingsPath);
+                settingfile.Close();
+                string[] settings = { "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
+                System.IO.File.WriteAllLines(SettingsPath, settings, Encoding.UTF8);
 
-            // for sysinfo
-            var OSVersion = Environment.OSVersion;
-            var ProcessorArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
-            var ProcessorIdentifier = Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER");
-            var ProcessorLevel = Environment.GetEnvironmentVariable("PROCESSOR_LEVEL");
-            var SystemDirectory = Environment.SystemDirectory;
-            var ProcessorCount = Environment.ProcessorCount;
-            var UserDomainName = Environment.UserDomainName;
-            var UserName = Environment.UserName;
-            var Version = Environment.Version;
-            string CurrentDir = $"C:\\Users\\{user}\\";
-            Thread WinThread = new Thread(Program.RefreshWinTitle);
-            WinThread.Start();
+            }
+            string WinTitle = System.IO.File.ReadLines(SettingsPath).First().Split('=')[1];
+            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), System.IO.File.ReadLines(SettingsPath).Skip(1).First().Split('=')[1], true);
+            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), System.IO.File.ReadLines(SettingsPath).Skip(2).First().Split('=')[1], true);
+            Thread winThread = new Thread(() => RefreshWinTitle(WinTitle));
+            winThread.Start();
             Console.Clear();
-            Console.WriteLine("oConsole\n");
+            Console.WriteLine("Shitass\n");
             while (true)
             {
 
@@ -61,17 +51,25 @@ namespace oConsole
                 {
                     case "cmd":
                         Console.WriteLine(
-                            "       _________                            .__          \n" +
-                            "  ____ \\_   ___ \\  ____   ____   __________ |  |   ____  \n" +
-                            " /  _ \\/    \\  \\/ /  _ \\ /    \\ /  ___/  _ \\|  | _/ __ \\ \n" +
-                            "(  <_> )     \\___(  <_> )   |  \\___ (  <_> )  |_\\  ___/ \n" +
-                            " \\____/ \\______  /\\____/|___|  /____  >____/|____/\\___  >\n" +
-                            "               \\/            \\/     \\/                \\/ \n" +
-                            "oConsole b8\n" +
-                            "Made by orange");
+                            "   _____ __    _ __                     _  __\n" +
+                            "  / ___// /_  (_) /_____ ___________   | |/ /\n" +
+                            "  \\__ \\/ __ \\/ / __/ __ `/ ___/ ___/   |   / \n" +
+                            " ___/ / / / / / /_/ /_/ (__  |__  )   /   |  \n" +
+                            "/____/_/ /_/_/\\__/\\__,_/____/____/   /_/|_|  \n" +
+                            "                                             \n" +
+                            "Shitass b250217, " +
+                            "made by orange\n");
                         break;
                     case "shitass":
-                        Console.WriteLine("rip da og D:");
+                        Console.WriteLine(
+                            "   _____ __    _ __                     _  __\n" +
+                            "  / ___// /_  (_) /_____ ___________   | |/ /\n" +
+                            "  \\__ \\/ __ \\/ / __/ __ `/ ___/ ___/   |   / \n" +
+                            " ___/ / / / / / /_/ /_/ (__  |__  )   /   |  \n" +
+                            "/____/_/ /_/_/\\__/\\__,_/____/____/   /_/|_|  \n" +
+                            "                                             \n" +
+                            "Shitass X b9.0, " +
+                            "made by orange\n");
                         break;
                     case "help":
                         if (args.Length <= 1)
@@ -79,6 +77,7 @@ namespace oConsole
                             Console.WriteLine(
                                  "\n" +
                             "cmd - Info about the console\n" +
+                            "echo - Outputs text to the console" +
                             "help - Type \"help <command>\" for a more detailed explanation on any command\n" +
                             "driveinfo - Info on drives and removable media\n" +
                             "sysinfo - Info on your PC\n" +
@@ -88,7 +87,8 @@ namespace oConsole
                             "ping - Pings an ip or website\n" +
                             "shorten - Shortens a url\n" +
                             "coin - Flips a coin\n" +
-                            "cl - Clears the console"
+                            "cl - Clears the console" +
+                            "color - Changes color of console elements"
                                 );
                         }
                         else
@@ -96,11 +96,11 @@ namespace oConsole
                             switch (args[1])
                             {
                                 case "cmd":
-                                    Console.WriteLine("cmd\nShows ASCII logo and info on the console\n");
+                                    Console.WriteLine("cmd\nShows info on the console\n");
                                     break;
 
-                                case "help":
-                                    Console.WriteLine("no\n");
+                                case "echo":
+                                    Console.WriteLine("echo\nOutputs text to the console");
                                     break;
 
                                 case "driveinfo":
@@ -138,30 +138,42 @@ namespace oConsole
                                 case "cl":
                                     Console.WriteLine("cl\nClears the screen");
                                     break;
+
+                                case "color":
+                                    Console.WriteLine("color\nChanges the color of the console background/text");
+                                    break;
+
+                                default:
+                                    Console.WriteLine("Not a valid command");
+                                    break;
                             }
 
                         }
                         break;
 
+                    case "echo":
+                        string echo = string.Join(" ", args.Skip(1));
+                        Console.WriteLine("\n" + echo + "\n");
+                        break;
                     case "driveinfo":
 
                         string drives = "";
-
-                        Console.WriteLine("fetching drives...");
 
                         foreach (System.IO.DriveInfo DriveInfo1 in System.IO.DriveInfo.GetDrives())
                         {
                             try
                             {
-                                drives += $"\nDrive: {DriveInfo1.Name}\n [Volume Label: {DriveInfo1.VolumeLabel}\n [Type: {DriveInfo1.DriveType}\n [Format: {DriveInfo1.DriveFormat}\n [Total Size: {DriveInfo1.TotalSize} bytes\n [Free Space: {DriveInfo1.AvailableFreeSpace} bytes\n";
+                                double totalSizeGB = DriveInfo1.TotalSize / (1024.0 * 1024.0 * 1024.0);
+                                double freeSpaceGB = DriveInfo1.AvailableFreeSpace / (1024.0 * 1024.0 * 1024.0);
+
+                                drives += $"\nDrive: {DriveInfo1.Name}\n [Volume Label: {DriveInfo1.VolumeLabel}\n [Type: {DriveInfo1.DriveType}\n [Format: {DriveInfo1.DriveFormat}\n [Total Size: {totalSizeGB:F2} GB\n [Free Space: {freeSpaceGB:F2} GB\n";
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine("something went wrong: " + e);
+                                Console.WriteLine("something went wrong: " + e.Message);
                             }
                         }
-                        Console.Clear();
-                        Console.Write(user + "> driveinfo\n");
+
                         Console.WriteLine(drives);
                         break;
 
@@ -169,15 +181,28 @@ namespace oConsole
 
                         string sysi = "";
 
-                        Console.WriteLine("fetching info...");
+                        Console.WriteLine("Getting info...");
+                        var OS = Environment.GetEnvironmentVariable("OS");
+                        var OSVersion = Environment.OSVersion;
+                        bool bit = Environment.Is64BitOperatingSystem;
+                        var Letter = Environment.GetEnvironmentVariable("HOMEDRIVE");
+                        var SystemDirectory = Environment.SystemDirectory;
+                        var CurrentDirectory = Environment.CurrentDirectory;
+                        var ProcessorCount = Environment.ProcessorCount;
+                        var PCName = Environment.GetEnvironmentVariable("COMPUTERNAME");
+                        var ProcessorArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
+                        var ProcessorIdentifier = Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER");
+                        var ProcessorLevel = Environment.GetEnvironmentVariable("PROCESSOR_LEVEL");
+                        var ProcessorRevision = Environment.GetEnvironmentVariable("PROCESSOR_REVISION");
+                        var CLRVersion = Environment.Version;
 
                         try
                         {
-                            sysi += $"\nOS Version: {OSVersion}\n [Processor Architecture: {ProcessorArchitecture}\n [Processor Identifier: {ProcessorIdentifier}\n [Processor Level: {ProcessorLevel}\n [System Directory: {SystemDirectory}\n [Processor Count: {ProcessorCount}\n [User Domain Name: {UserDomainName}\n [Username: {UserName}\n [Version: {Version}\n";
+                            sysi += $"\nOS: {OS}\n [OS Version: {OSVersion}\n [64-bit: {bit}\n [Main Drive Letter: {Letter}\n [System Directory: {SystemDirectory}\n [Current Directory: {CurrentDirectory}\n [Processor Architecture: {ProcessorArchitecture}\n [Processor Identifier: {ProcessorIdentifier}\n [Processor Level: {ProcessorLevel}\n [Processor Count: {ProcessorCount}\n [Processor Revision: {ProcessorRevision}\n [Computer Name: {PCName}\n [Username: {user}\n [CLR Version: {CLRVersion}\n";
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            Console.WriteLine("Something went wrong");
+                            Console.WriteLine("Something went wrong: " + e.Message);
                         }
                         Console.WriteLine(sysi);
                         break;
@@ -192,31 +217,11 @@ namespace oConsole
 
                         string DelPath = args[1];
 
-
-                        // yes ik this is inefficient but idc
-                        if (File.Exists(DelPath) || Directory.Exists(DelPath))
+                        if (System.IO.File.Exists(DelPath) || Directory.Exists(DelPath))
                         {
-
-                            if (DelPath.ToLower().Contains("c:\\windows"))
-                            {
-                                Console.Write("file MIGHT be a system file, are you sure you want to continue? (y/n)");
-
-                                ConsoleKeyInfo SysfileConfirm = Console.ReadKey();
-
-                                if (SysfileConfirm.Key == ConsoleKey.Y)
-                                {
-                                    Console.WriteLine("you might have to run as administrator to delete this file\n");
-                                    Thread.Sleep(100);
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-
                             try
                             {
-                                File.Delete(DelPath);
+                                System.IO.File.Delete(DelPath);
                                 Console.WriteLine($"successfully deleted {DelPath}");
                                 break;
                             }
@@ -228,9 +233,9 @@ namespace oConsole
                                     Directory.Delete(DelPath);
                                     Console.WriteLine($"successfully deleted {DelPath}");
                                 }
-                                catch
+                                catch (Exception e)
                                 {
-                                    Console.WriteLine("failed to delete file or folder, make sure another app isnt using it");
+                                    Console.WriteLine("Something went wrong: " + e.Message);
                                 }
                             }
 
@@ -256,20 +261,112 @@ namespace oConsole
 
                         if (args.Length <= 1)
                         {
-                            Console.WriteLine("Usage: title <new window title>");
+                            Console.WriteLine("Usage: title <new window title> OR title -reset");
                             break;
                         }
-                        string wintitle;
-
-                        wintitle = args[1];
-
-                        if (wintitle == "")
+                        if (args[1] == "-reset")
                         {
-                            Console.WriteLine("nothing provided");
+                            System.IO.File.WriteAllText(SettingsPath, "wintitle=shitass", Encoding.UTF8);
+                            Console.WriteLine("Reset window title, restart for your changes to take effect");
                             break;
                         }
+                        else
+                        {
+                            string wintitle;
 
-                        Console.WriteLine($"New window title: {wintitle}\n");
+                            wintitle = string.Join(" ", args.Skip(1));
+
+                            if (wintitle == "")
+                            {
+                                Console.WriteLine("nothing provided");
+                                break;
+                            }
+
+                            Console.WriteLine($"New window title: {wintitle}\n");
+                            string[] lines = File.ReadAllLines(SettingsPath);
+                            lines[0] = "wintitle=" + wintitle;
+                            File.WriteAllLines(SettingsPath, lines);
+                            Console.WriteLine("Restart for your changes to take effect");
+                        }
+                        break;
+
+                    case "color":
+                        if (args.Length < 3)
+                        {
+                            Console.WriteLine("Usage: color background/text <color>");
+                            Console.WriteLine("Available colors: Black, White, Gray, DarkGray, Red, DarkRed, Blue, DarkBlue, Green, DarkGreen, Yellow, DarkYellow, Cyan, DarkCyan, Magenta, DarkMagenta");
+                            break;
+                        }
+                        string property = args[1].ToLower();
+                        string color = args[2];
+                        try
+                        {
+                            string[] lines = File.ReadAllLines(SettingsPath);
+                            switch (property)
+                            {
+                                case "foreground":
+                                    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
+                                    Console.WriteLine($"Changed foreground color to {color}");
+                                    
+                                    lines[2] = "fgcolor=" + color;
+                                    File.WriteAllLines(SettingsPath, lines);
+                                    break;
+
+                                case "fg":
+                                    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
+                                    Console.WriteLine($"Changed foreground color to {color}");
+                                    lines[2] = "fgcolor=" + color;
+                                    File.WriteAllLines(SettingsPath, lines);
+                                    break;
+
+                                case "text":
+                                    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
+                                    Console.WriteLine($"Changed foreground color to {color}");
+                                    lines[2] = "fgcolor=" + color;
+                                    File.WriteAllLines(SettingsPath, lines);
+                                    break;
+
+                                case "background":
+                                    Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
+                                    lines[1] = "bgcolor=" + color;
+                                    File.WriteAllLines(SettingsPath, lines);
+                                    Console.Clear();
+                                    Console.WriteLine("shitass\n");
+                                    Console.WriteLine($"Changed background color to {color}\n");
+                                    break;
+
+                                case "bg":
+                                    Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
+                                    lines[1] = "bgcolor=" + color;
+                                    File.WriteAllLines(SettingsPath, lines);
+                                    Console.Clear();
+                                    Console.WriteLine("shitass\n");
+                                    Console.WriteLine($"Changed background color to {color}\n");
+                                    break;
+
+                                case "-reset":
+                                    Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), "black", true);
+                                    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), "white", true);
+                                    lines[1] = "bgcolor=black";
+                                    lines[1] = "fgcolor=white";
+                                    File.WriteAllLines(SettingsPath, lines);
+                                    Console.WriteLine("shitass\n");
+                                    Console.WriteLine("Reset console colors");
+                                    break;
+
+                                default:
+                                    Console.WriteLine("Invalid property, use 'text' or 'background'.");
+                                    break;
+                            }
+                        }
+                        catch (ArgumentException)
+                        {
+                            Console.WriteLine("Error: Invalid color");
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Something went wrong: " + e.Message);
+                        }
                         break;
 
                     case "shorten":
@@ -278,7 +375,8 @@ namespace oConsole
                             Console.WriteLine("Usage: shorten <url>");
                             break;
                         }
-                        if (args.Length >= 3) {
+                        if (args.Length >= 3)
+                        {
                             if (args[2] == "-alt")
                             {
                                 await Shorten(args[1], true);
@@ -287,7 +385,7 @@ namespace oConsole
                         }
                         else
                         {
-                            
+
                             try
                             {
                                 await Shorten(args[1], false);
@@ -298,8 +396,6 @@ namespace oConsole
                             }
                         }
                         break;
-
-                    
 
                     case "coin":
                         switch (new Random().Next(0, 2))
@@ -313,38 +409,20 @@ namespace oConsole
                         }
                         break;
 
-                    // vvv testing vvv
-                    case "timever":
-                        var parse = (DateTime.Today);
-                        string ParseString = (Convert.ToString(parse));
-                        string Date = ParseString[0] + "" /* prevents "cant convert type int to string" errors */ + ParseString[1] + ParseString[2] + ParseString[3] + ParseString[4] + ParseString[5] + ParseString[6] + ParseString[7];
-                        string[] verArray = (Date.Split('/'));
-                        if (verArray[0].Length < 2)
-                        {
-                            verArray[0] = "0" + verArray[0];
-                        }
-                        if (verArray[1].Length < 2)
-                        {
-                            verArray[1] = "0" + verArray[1];
-                        }
-                        if (verArray[2].Length < 2)
-                        {
-                            verArray[2] = "0" + verArray[2];
-                        }
-                        string Final = verArray[0] + verArray[1] + verArray[2];
-                        Console.WriteLine("Build #" + Final);
-                        break;
-                    // ^^^ testing ^^^
-
                     case "":
                         Console.WriteLine("");
                         break;
 
                     case "cl":
                         Console.Clear();
+                        Console.WriteLine("shitass\n");
                         break;
 
                     case "exit":
+                        Environment.Exit(0);
+                        break;
+
+                    case "quit":
                         Environment.Exit(0);
                         break;
 
@@ -382,7 +460,7 @@ namespace oConsole
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"failed to ping {host}\nerror: " + e.Message);
+                    Console.WriteLine($"failed to ping {host}\nError: " + e.Message);
                 }
             }
         }
@@ -407,14 +485,14 @@ namespace oConsole
             Console.WriteLine("\n" + response + "\n");
             return response;
         }
-        public static void RefreshWinTitle()
+        public static void RefreshWinTitle(string t)
         {
             while (true)
             {
                 var Time = (DateTime.Now);
-                Console.Title = "oConsole | " + Time;
-                Thread.Sleep(2);
-            } 
+                Console.Title = t + " | " + Time;
+                Thread.Sleep(5);
+            }
         }
     }
 }
