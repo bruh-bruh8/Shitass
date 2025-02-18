@@ -52,7 +52,7 @@
 
 ## Build 210819
 
-> *[/] Fixed sysinfo always saying NT 6.0 on 8.1+ (thx [plex](github.com/plexthedev)*
+> *[/] Fixed sysinfo always saying NT 6.0 on 8.1+ (thx [plex](https://www.github.com/plexthedev))*
 
 ## Build 210720b
 
