@@ -1,39 +1,60 @@
-#### Build 8.1
-*3/9/22*
+## Build 250217
 
-> *[/] Fixed very high power usage (for real this time)*
-## Build 8
-*3/8/22*
+> *[/] Builds are now named by date instead of order of release*
 
-> *[/] Rebranded console (RIP shitass)*
+> *[/] Added more information to the sysinfo command*
+
+> *[/] Title command now works with spaces and saves after closing*
+
+> *[+] Added the ability to reset the window title with title -reset*
+
+> *[/] The driveinfo command now gives gigabytes for total size and free space*
+
+> *[/] Added fallback to advanced help*
+
+> *[/] Fixed error handling for many commands*
+
+> *[/] Fixed driveinfo clearing the console before displaying information*
+
+> *[+] Added the color command*
+
+> *[+] Added the echo command*
+
+> *[/] Clear command now doesn't remove the console name*
+
+> *[/] driveinfo now uses gigabytes instead of bytes*
+
+> *[/] Saving is more efficient*
+
+## Build 220309
+
+> *[/] Fixed very high power usage, for real this time*
+
+## Build 220308
 
 > *[-] Removed time command due to it being useless*
 
 > *[/] Fixed title bug*
 
-> *[/] Made title more efficient (no more very high power usage :])*
+> *[/] Made title more efficient (no more very high power usage :))*
 
 > *[/] Reformatted changelog*
 
-## Build 7
-*2/26/22*
+## Build 220226
 
 > *[+] Added IPv6 support to ping command*
 
 > *[+] Added date and time in the window title*
 
-#### Build 6.2
-*1/10/22*
+## Build 220110
 
 > *[+] Added v.gd as an alternate link shortener*
 
-#### Build 6.1
-*8/19/21*
+## Build 210819
 
-> *[/] Fixed sysinfo always saying NT 6.0 on 8.1+ (thx [plex](https://www.github.com/plexthedev) for pointing this out)*
+> *[/] Fixed sysinfo always saying NT 6.0 on 8.1+ (thx [plex](github.com/plexthedev)*
 
-## Build 6
-*7/20/21*
+## Build 210720b
 
 > *[+] Added url shortener*
 
@@ -41,29 +62,18 @@
 
 > *[+] Added coinflip*
 
-## Build 5
-*7/20/21*
+## Build 210720a
 
 > *[+] Added ping command*
 
-## Build 4
-*7/18/21*
+## Build 210718
 
 > *[+] Added del command*
 
 > *[/] Made help better*
 
-## Build 3
-*7/8/21*
+## Build 210708
 
 > *[+] Made the repo*
 
 > *[+] Added system info command*
-
-## Known issues
-
-> *URLs that contain &, ;, #, etc. won't work with the shorten command*
-
-## Coming soon...
-
-> *Base64 converter*
