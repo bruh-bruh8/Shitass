@@ -2,11 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
-using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Http;
 using System.Text;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace shitass
 {
@@ -50,25 +50,15 @@ namespace shitass
                 switch (args[0])
                 {
                     case "cmd":
-                        Console.WriteLine(
-                            "   _____ __    _ __                     _  __\n" +
-                            "  / ___// /_  (_) /_____ ___________   | |/ /\n" +
-                            "  \\__ \\/ __ \\/ / __/ __ `/ ___/ ___/   |   / \n" +
-                            " ___/ / / / / / /_/ /_/ (__  |__  )   /   |  \n" +
-                            "/____/_/ /_/_/\\__/\\__,_/____/____/   /_/|_|  \n" +
-                            "                                             \n" +
-                            "Shitass b250217, " +
-                            "made by orange\n");
-                        break;
                     case "shitass":
-                        Console.WriteLine(
-                            "   _____ __    _ __                     _  __\n" +
-                            "  / ___// /_  (_) /_____ ___________   | |/ /\n" +
-                            "  \\__ \\/ __ \\/ / __/ __ `/ ___/ ___/   |   / \n" +
-                            " ___/ / / / / / /_/ /_/ (__  |__  )   /   |  \n" +
-                            "/____/_/ /_/_/\\__/\\__,_/____/____/   /_/|_|  \n" +
-                            "                                             \n" +
-                            "Shitass X b9.0, " +
+                    case "info":
+                        Console.WriteLine("         __    _ __                 \n" +
+                        "   _____/ /_  (_) /_____ ___________\n" +
+                        "  / ___/ __ \\/ / __/ __ `/ ___/ ___/\n" +
+                        " (__  ) / / / / /_/ /_/ (__  |__  ) \n" +
+                        "/____/_/ /_/_/\\__/\\__,_/____/____/  \n" +
+                        "                                    \n" +
+                        "Shitass b250218, " +
                             "made by orange\n");
                         break;
                     case "help":
@@ -87,8 +77,10 @@ namespace shitass
                             "ping - Pings an ip or website\n" +
                             "shorten - Shortens a url\n" +
                             "coin - Flips a coin\n" +
-                            "cl - Clears the console" +
-                            "color - Changes color of console elements"
+                            "cl - Clears the console\n" +
+                            "color - Changes color of console elements\n" +
+                            "ascii - Creates ascii text art\n" +
+                            "rps - Plays rock paper scissors"
                                 );
                         }
                         else
@@ -128,7 +120,7 @@ namespace shitass
                                     break;
 
                                 case "shorten":
-                                    Console.WriteLine("shorten\nShortens a url\nOptional args: /alt: uses v.gd instead of is.gd\n");
+                                    Console.WriteLine("shorten\nShortens a url\nOptional args: -alt: uses v.gd instead of is.gd\n");
                                     break;
 
                                 case "coin":
@@ -140,7 +132,15 @@ namespace shitass
                                     break;
 
                                 case "color":
-                                    Console.WriteLine("color\nChanges the color of the console background/text");
+                                    Console.WriteLine("color\nChanges the color of the console background/text\nOptional args: -reset: resets colors");
+                                    break;
+
+                                case "ascii":
+                                    Console.WriteLine("ascii\nCreates ascii text art");
+                                    break;
+
+                                case "rps":
+                                    Console.WriteLine("rps\nPlays rock paper scissors");
                                     break;
 
                                 default:
@@ -207,6 +207,7 @@ namespace shitass
                         Console.WriteLine(sysi);
                         break;
 
+                    case "delete":
                     case "del":
 
                         if (args.Length <= 1)
@@ -217,34 +218,27 @@ namespace shitass
 
                         string DelPath = args[1];
 
-                        if (System.IO.File.Exists(DelPath) || Directory.Exists(DelPath))
+                        try
                         {
-                            try
+                            if (File.Exists(DelPath))
                             {
-                                System.IO.File.Delete(DelPath);
-                                Console.WriteLine($"successfully deleted {DelPath}");
-                                break;
+                                File.Delete(DelPath);
+                                Console.WriteLine($"Successfully deleted file: {DelPath}");
                             }
-                            catch
+                            else if (Directory.Exists(DelPath))
                             {
-                                // File.Delete(CurrentDir + "\\" + args[1]);
-                                try
-                                {
-                                    Directory.Delete(DelPath);
-                                    Console.WriteLine($"successfully deleted {DelPath}");
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine("Something went wrong: " + e.Message);
-                                }
+                                Directory.Delete(DelPath, true); // recursive true now
+                                Console.WriteLine($"Successfully deleted directory: {DelPath}");
                             }
-
+                            else
+                            {
+                                Console.WriteLine("file doesnt exist bruh...");
+                            }
                         }
-                        else
+                        catch (Exception e)
                         {
-                            Console.WriteLine("file doesnt exist bruh..");
+                            Console.WriteLine($"Error deleting {DelPath}: {e.Message}");
                         }
-
                         break;
 
                     case "ping":
@@ -258,6 +252,8 @@ namespace shitass
                         break;
 
                     case "title":
+                    case "wintitle":
+                    case "windowtitle":
 
                         if (args.Length <= 1)
                         {
@@ -291,34 +287,37 @@ namespace shitass
                         break;
 
                     case "color":
-                        if (args.Length < 3)
+                        if (args.Length < 2)
                         {
-                            Console.WriteLine("Usage: color background/text <color>");
+                            Console.WriteLine("Usage: color background/text <color> OR color -reset");
                             Console.WriteLine("Available colors: Black, White, Gray, DarkGray, Red, DarkRed, Blue, DarkBlue, Green, DarkGreen, Yellow, DarkYellow, Cyan, DarkCyan, Magenta, DarkMagenta");
                             break;
                         }
+
                         string property = args[1].ToLower();
-                        string color = args[2];
+                        string color = args.Length > 2 ? args[2] : "";
+
                         try
                         {
                             string[] lines = File.ReadAllLines(SettingsPath);
+
+                            if (property == "-reset")
+                            {
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.ForegroundColor = ConsoleColor.White;
+                                lines[1] = "bgcolor=black";
+                                lines[2] = "fgcolor=white";
+                                File.WriteAllLines(SettingsPath, lines);
+                                Console.Clear();
+                                Console.WriteLine("shitass\n");
+                                Console.WriteLine("Reset console colors");
+                                break;
+                            }
+
                             switch (property)
                             {
                                 case "foreground":
-                                    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
-                                    Console.WriteLine($"Changed foreground color to {color}");
-                                    
-                                    lines[2] = "fgcolor=" + color;
-                                    File.WriteAllLines(SettingsPath, lines);
-                                    break;
-
                                 case "fg":
-                                    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
-                                    Console.WriteLine($"Changed foreground color to {color}");
-                                    lines[2] = "fgcolor=" + color;
-                                    File.WriteAllLines(SettingsPath, lines);
-                                    break;
-
                                 case "text":
                                     Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
                                     Console.WriteLine($"Changed foreground color to {color}");
@@ -327,14 +326,6 @@ namespace shitass
                                     break;
 
                                 case "background":
-                                    Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
-                                    lines[1] = "bgcolor=" + color;
-                                    File.WriteAllLines(SettingsPath, lines);
-                                    Console.Clear();
-                                    Console.WriteLine("shitass\n");
-                                    Console.WriteLine($"Changed background color to {color}\n");
-                                    break;
-
                                 case "bg":
                                     Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
                                     lines[1] = "bgcolor=" + color;
@@ -342,16 +333,6 @@ namespace shitass
                                     Console.Clear();
                                     Console.WriteLine("shitass\n");
                                     Console.WriteLine($"Changed background color to {color}\n");
-                                    break;
-
-                                case "-reset":
-                                    Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), "black", true);
-                                    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), "white", true);
-                                    lines[1] = "bgcolor=black";
-                                    lines[1] = "fgcolor=white";
-                                    File.WriteAllLines(SettingsPath, lines);
-                                    Console.WriteLine("shitass\n");
-                                    Console.WriteLine("Reset console colors");
                                     break;
 
                                 default:
@@ -398,6 +379,7 @@ namespace shitass
                         break;
 
                     case "coin":
+                    case "coinflip":
                         switch (new Random().Next(0, 2))
                         {
                             case 0:
@@ -409,19 +391,45 @@ namespace shitass
                         }
                         break;
 
+                    case "ascii":
+                    case "textart":
+                        if (args.Length < 2)
+                        {
+                            Console.WriteLine("Usage: ascii <text> [font]");
+                            break;
+                        }
+                        if (string.IsNullOrWhiteSpace(args[1]))
+                        {
+                            Console.WriteLine("Usage: ascii <text> [font]");
+                            return;
+                        }
+                        string asciiText = args.Length >= 3 ? string.Join(" ", args.Skip(1).Take(args.Length - 2)) : string.Join(" ", args.Skip(1));
+                        string font = args.Length >= 3 ? args[2] : "";
+
+                        await genAscii(asciiText, font);
+                        break;
+
+                    case "rps":
+                    case "rockpaperscissors":
+                        if (args.Length < 2)
+                        {
+                            Console.WriteLine("Usage: rps <rock|paper|scissors>");
+                            break;
+                        }
+                        rps(args[1].ToLower());
+                        break;
+
                     case "":
                         Console.WriteLine("");
                         break;
 
                     case "cl":
+                    case "clear":
                         Console.Clear();
                         Console.WriteLine("shitass\n");
                         break;
 
                     case "exit":
-                        Environment.Exit(0);
-                        break;
-
                     case "quit":
                         Environment.Exit(0);
                         break;
@@ -434,65 +442,125 @@ namespace shitass
         }
         public static void ping(string host)
         {
-            Ping p = new Ping();
-            PingReply r;
-            if ((!(host == "localhost") && !host.Contains(".") && !host.Contains(":")) || host.Length < 7 || host.Length > 39)
+            if (string.IsNullOrWhiteSpace(host) || host.Length < 7 || host.Length > 39 ||
+        (!host.Contains(".") && !host.Contains(":") && !host.Equals("localhost", StringComparison.OrdinalIgnoreCase)))
             {
-                Console.WriteLine("Not an IP or URL.");
+                Console.WriteLine("Invalid IP address or hostname.");
+                return;
             }
-            else
+
+            try
             {
-                try
+                using (Ping p = new Ping())
                 {
-                    if (host.ToLower() == "localhost")
+                    string target = host.Equals("localhost", StringComparison.OrdinalIgnoreCase) ? "127.0.0.1" : host;
+                    PingReply reply = p.Send(target);
+
+                    if (reply.Status == IPStatus.Success)
                     {
-                        r = p.Send("127.0.0.1");
+                        Console.WriteLine($"Ping to {host} [{reply.Address}]\n" +
+                                          $"Status: Successful\n" +
+                                          $"Response Time: {reply.RoundtripTime} ms\n");
                     }
                     else
                     {
-                        r = p.Send(host);
-                    }
-                    if (r.Status == IPStatus.Success)
-                    {
-                        Console.WriteLine("Ping to " + host.ToString() + "\n[" + r.Address.ToString() + "]\n" + "Status: Successful\n"
-                           + "Response delay: " + r.RoundtripTime.ToString() + " ms\n");
+                        Console.WriteLine($"Ping failed: {reply.Status}");
                     }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"failed to ping {host}\nError: " + e.Message);
-                }
+            }
+            catch (PingException pe)
+            {
+                Console.WriteLine($"Ping failed: {pe.Message}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unexpected error: {e.Message}");
             }
         }
         public static async Task<string> Shorten(string url, bool alt)
         {
-            var client = new HttpClient();
-            string uri;
-            if (alt == true)
+            string baseUrl = alt ? "https://v.gd/create.php" : "https://is.gd/create.php";
+            string uri = $"{baseUrl}?format=simple&url={Uri.EscapeDataString(url)}&logstats=1";
+
+            using (var client = new HttpClient())
             {
-                uri = Uri.EscapeUriString($"https://v.gd/create.php?format=simple&url={url}&logstats=1");
+                HttpResponseMessage responseMessage = await client.GetAsync(uri);
+                string response = await responseMessage.Content.ReadAsStringAsync();
+
+                if (!responseMessage.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Error: {responseMessage.StatusCode} - {response}");
+
+                Console.WriteLine($"\n{response}\n");
+                return response;
             }
-            else
-            {
-                uri = Uri.EscapeUriString($"https://is.gd/create.php?format=simple&url={url}&logstats=1");
-            }
-            var responseMessage = await client.GetAsync(uri);
-            var response = await responseMessage.Content.ReadAsStringAsync();
-            if (responseMessage.StatusCode != HttpStatusCode.OK)
-            {
-                throw new HttpRequestException(response);
-            }
-            Console.WriteLine("\n" + response + "\n");
-            return response;
         }
         public static void RefreshWinTitle(string t)
         {
             while (true)
             {
-                var Time = (DateTime.Now);
-                Console.Title = t + " | " + Time;
-                Thread.Sleep(5);
+                Console.Title = t + " | " + DateTime.Now;
+                Thread.Sleep(50);
             }
         }
-    }
+        public static async Task genAscii(string text, string font = "") // https://github.com/thelicato/asciified
+        {
+
+            string url = $"https://asciified.thelicato.io/api/v2/ascii?text={Uri.EscapeDataString(text)}";
+            if (!string.IsNullOrWhiteSpace(font))
+            {
+                url += $"&font={Uri.EscapeDataString(font)}"; // font is case sensitive so kinda jank (i added support tho such good dev)
+            }
+
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"Error getting ascii art: {response.StatusCode}");
+                        return;
+                    }
+
+                    string asciiArt = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("\n" + asciiArt + "\n");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error: {e.Message}");
+                }
+            }
+
+        }
+
+        public static void rps(string playerChoice)
+            {
+                string[] choices = { "rock", "paper", "scissors" };
+                Random rng = new Random();
+                string computerChoice = choices[rng.Next(choices.Length)];
+
+                if (!Array.Exists(choices, choice => choice == playerChoice))
+                {
+                    Console.WriteLine("Usage: rps <rock|paper|scissors>");
+                    return;
+                }
+
+                Console.WriteLine($"you chose {playerChoice}, i chose {computerChoice}");
+
+                if (playerChoice == computerChoice)
+                {
+                    Console.WriteLine("it's a tie");
+                }
+                else if ((playerChoice == "rock" && computerChoice == "scissors") ||
+                         (playerChoice == "paper" && computerChoice == "rock") ||
+                         (playerChoice == "scissors" && computerChoice == "paper"))
+                {
+                    Console.WriteLine("you win");
+                }
+                else
+                {
+                    Console.WriteLine("you lose");
+                }
+            }
+        }
 }
