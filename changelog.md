@@ -1,6 +1,20 @@
+## Build 250218
+
+> *[+] Added ASCII Art generator*
+
+> *[+] Added rock paper scissors*
+
+> *[/] Made delete command better*
+
+> *[/] Optimized ping and shorten*
+
+> *[/] Fixed crashes with color command*
+
+> *[/] Aliases more efficient*
+
 ## Build 250217
 
-> *[/] Builds are now named by date instead of order of release*
+> *[/] Builds are now named by date*
 
 > *[/] Added more information to the sysinfo command*
 
