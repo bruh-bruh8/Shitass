@@ -1,3 +1,11 @@
+## Build 250223
+
+> *[+] Added password generator*
+
+> *[/] Settings file stuff*
+
+> *[/] Other bugfixes*
+
 ## Build 250218
 
 > *[+] Added ASCII Art generator*
