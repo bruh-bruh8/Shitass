@@ -6,15 +6,14 @@ using System.Net.NetworkInformation;
 using System.Net.Http;
 using System.Text;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace shitass
 {
     class Program
     {
+        const string version = "250223"; // current build (remember to update lol)
         static async Task Main()
         {
-            Console.WriteLine("loading...");
             string user = Environment.UserName;
             string SettingsPath = $@"C:\Users\{user}\AppData\Roaming\Shitass\settings.txt";
             string FilePath = $@"C:\Users\{user}\AppData\Roaming\Shitass\";
@@ -26,17 +25,27 @@ namespace shitass
                 }
                 var settingfile = System.IO.File.Create(SettingsPath);
                 settingfile.Close();
-                string[] settings = { "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
+                string[] settings = { "version=250223", "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
                 System.IO.File.WriteAllLines(SettingsPath, settings, Encoding.UTF8);
-
+                Console.WriteLine($"Created settings file at {SettingsPath}");
+                Thread.Sleep(3000);
             }
-            string WinTitle = System.IO.File.ReadLines(SettingsPath).First().Split('=')[1];
-            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), System.IO.File.ReadLines(SettingsPath).Skip(1).First().Split('=')[1], true);
-            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), System.IO.File.ReadLines(SettingsPath).Skip(2).First().Split('=')[1], true);
-            Thread winThread = new Thread(() => RefreshWinTitle(WinTitle));
-            winThread.Start();
+            if (System.IO.File.ReadLines(SettingsPath).First().Split('=')[1] != version) {
+                File.Delete(SettingsPath);
+                var settingfile = System.IO.File.Create(SettingsPath);
+                settingfile.Close();
+                string[] settings = { "version=250223", "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
+                System.IO.File.WriteAllLines(SettingsPath, settings, Encoding.UTF8);
+                Console.WriteLine($"Old version detected, your settings may have been reset.");
+                Thread.Sleep(3000);
+            }
+            string WinTitle = System.IO.File.ReadLines(SettingsPath).Skip(1).First().Split('=')[1];
+            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), System.IO.File.ReadLines(SettingsPath).Skip(2).First().Split('=')[1], true);
+            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), System.IO.File.ReadLines(SettingsPath).Skip(3).First().Split('=')[1], true);
+            Thread title = new Thread(() => RefreshWinTitle(WinTitle));
+            title.Start();
             Console.Clear();
-            Console.WriteLine("Shitass\n");
+            Console.WriteLine("shitass\n");
             while (true)
             {
 
@@ -52,13 +61,14 @@ namespace shitass
                     case "cmd":
                     case "shitass":
                     case "info":
+                    case "version":
                         Console.WriteLine("         __    _ __                 \n" +
                         "   _____/ /_  (_) /_____ ___________\n" +
                         "  / ___/ __ \\/ / __/ __ `/ ___/ ___/\n" +
                         " (__  ) / / / / /_/ /_/ (__  |__  ) \n" +
                         "/____/_/ /_/_/\\__/\\__,_/____/____/  \n" +
                         "                                    \n" +
-                        "Shitass b250218, " +
+                        "Shitass b250220, " +
                             "made by orange\n");
                         break;
                     case "help":
@@ -80,7 +90,7 @@ namespace shitass
                             "cl - Clears the console\n" +
                             "color - Changes color of console elements\n" +
                             "ascii - Creates ascii text art\n" +
-                            "rps - Plays rock paper scissors"
+                            "rps - Plays rock paper scissors\n"
                                 );
                         }
                         else
@@ -181,7 +191,6 @@ namespace shitass
 
                         string sysi = "";
 
-                        Console.WriteLine("Getting info...");
                         var OS = Environment.GetEnvironmentVariable("OS");
                         var OSVersion = Environment.OSVersion;
                         bool bit = Environment.Is64BitOperatingSystem;
@@ -254,7 +263,7 @@ namespace shitass
                     case "title":
                     case "wintitle":
                     case "windowtitle":
-
+                        
                         if (args.Length <= 1)
                         {
                             Console.WriteLine("Usage: title <new window title> OR title -reset");
@@ -262,7 +271,9 @@ namespace shitass
                         }
                         if (args[1] == "-reset")
                         {
-                            System.IO.File.WriteAllText(SettingsPath, "wintitle=shitass", Encoding.UTF8);
+                            string[] lines = File.ReadAllLines(SettingsPath);
+                            lines[1] = "wintitle=shitass";
+                            File.WriteAllLines(SettingsPath, lines);
                             Console.WriteLine("Reset window title, restart for your changes to take effect");
                             break;
                         }
@@ -280,7 +291,7 @@ namespace shitass
 
                             Console.WriteLine($"New window title: {wintitle}\n");
                             string[] lines = File.ReadAllLines(SettingsPath);
-                            lines[0] = "wintitle=" + wintitle;
+                            lines[1] = "wintitle=" + wintitle;
                             File.WriteAllLines(SettingsPath, lines);
                             Console.WriteLine("Restart for your changes to take effect");
                         }
@@ -305,8 +316,8 @@ namespace shitass
                             {
                                 Console.BackgroundColor = ConsoleColor.Black;
                                 Console.ForegroundColor = ConsoleColor.White;
-                                lines[1] = "bgcolor=black";
-                                lines[2] = "fgcolor=white";
+                                lines[2] = "bgcolor=black";
+                                lines[3] = "fgcolor=white";
                                 File.WriteAllLines(SettingsPath, lines);
                                 Console.Clear();
                                 Console.WriteLine("shitass\n");
@@ -321,18 +332,58 @@ namespace shitass
                                 case "text":
                                     Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
                                     Console.WriteLine($"Changed foreground color to {color}");
-                                    lines[2] = "fgcolor=" + color;
+                                    lines[3] = "fgcolor=" + color;
                                     File.WriteAllLines(SettingsPath, lines);
+                                    Console.Clear();
+                                    Console.WriteLine("shitass\n");
                                     break;
-
+                                    
                                 case "background":
                                 case "bg":
                                     Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color, true);
-                                    lines[1] = "bgcolor=" + color;
+                                    lines[2] = "bgcolor=" + color;
                                     File.WriteAllLines(SettingsPath, lines);
                                     Console.Clear();
                                     Console.WriteLine("shitass\n");
                                     Console.WriteLine($"Changed background color to {color}\n");
+                                    Console.Clear();
+                                    Console.WriteLine("shitass\n");
+                                    break;
+
+                                case "preset":
+                                    switch (color)
+                                    {
+                                        case "light": // todo: make console self destruct if selected
+                                            Console.BackgroundColor = ConsoleColor.White;
+                                            Console.ForegroundColor = ConsoleColor.Black;
+                                            lines[2] = "bgcolor=white";
+                                            lines[3] = "fgcolor=black";
+                                            File.WriteAllLines(SettingsPath, lines);
+                                            Console.Clear();
+                                            Console.WriteLine("shitass\n");
+                                            break;
+
+                                        case "dark":
+                                            Console.BackgroundColor = ConsoleColor.Black;
+                                            Console.ForegroundColor = ConsoleColor.White;
+                                            lines[2] = "bgcolor=black";
+                                            lines[3] = "fgcolor=white";
+                                            File.WriteAllLines(SettingsPath, lines);
+                                            Console.Clear();
+                                            Console.WriteLine("shitass\n");
+                                            break;
+
+                                        case "hackerman":
+                                        case "skid":
+                                            Console.BackgroundColor = ConsoleColor.Black;
+                                            Console.ForegroundColor = ConsoleColor.Green;
+                                            lines[2] = "bgcolor=black";
+                                            lines[3] = "fgcolor=green";
+                                            File.WriteAllLines(SettingsPath, lines);
+                                            Console.Clear();
+                                            Console.WriteLine("shitass\n");
+                                            break;
+                                    }
                                     break;
 
                                 default:
@@ -360,8 +411,14 @@ namespace shitass
                         {
                             if (args[2] == "-alt")
                             {
-                                await Shorten(args[1], true);
-                                break;
+                                try
+                                {
+                                    await Shorten(args[1], true);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e.Message);
+                                }
                             }
                         }
                         else
@@ -375,6 +432,22 @@ namespace shitass
                             {
                                 Console.WriteLine(e.Message);
                             }
+                        }
+                        break;
+
+                    case "password":
+                        if (args.Length <= 1)
+                        {
+                            Console.WriteLine("Usage: password <length>");
+                            break;
+                        }
+                        if (int.TryParse(args[1], out int length))
+                        {
+                            genPassword(length);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid length. Please enter a number.");
                         }
                         break;
 
@@ -431,8 +504,15 @@ namespace shitass
 
                     case "exit":
                     case "quit":
+                    case "kys":
+                    case "killyourself":
                         Environment.Exit(0);
                         break;
+
+                    case "restart":
+                        Console.Clear();
+                        await Main();
+                    break;
 
                     default:
                         Console.WriteLine("wtf you saying bruh..");
@@ -532,7 +612,64 @@ namespace shitass
             }
 
         }
+        public static void genPassword(int length = 8)
+        {
+            string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string lowercase = "abcdefghijklmnopqrstuvwxyz";
+            string numbers = "0123456789";
+            string symbols = "!@#$%^&*()-_=+[]{}|;:,.<>?";
 
+            char[] password = new char[length];
+
+            Random r = new Random();
+
+            for (int i = 0; i < length; i++) {
+                switch (r.Next(1, 5))
+                {
+                    case 1:
+                        password[i] = uppercase[r.Next(uppercase.Length)];
+                    break;
+                    case 2:
+                        password[i] = lowercase[r.Next(lowercase.Length)];
+                        break;
+                    case 3:
+                        password[i] = numbers[r.Next(numbers.Length)];
+                        break;
+                    case 4:
+                        password[i] = symbols[r.Next(symbols.Length)];
+                        break;
+                }
+            }
+            bool hasUpper = false, hasLower = false, hasNumber = false, hasSymbol = false;
+            while (!hasUpper || !hasLower || !hasNumber || !hasSymbol)
+            {
+                foreach (char c in password)
+                {
+                    if (uppercase.Contains(c)) hasUpper = true;
+                    else if (lowercase.Contains(c)) hasLower = true;
+                    else if (numbers.Contains(c)) hasNumber = true;
+                    else if (symbols.Contains(c)) hasSymbol = true;
+                }
+                if (!hasUpper)
+                {
+                    password[r.Next(password.Length)] = uppercase[r.Next(uppercase.Length)];
+                }
+                if (!hasLower)
+                {
+                    password[r.Next(password.Length)] = lowercase[r.Next(lowercase.Length)];
+                }
+                if (!hasNumber)
+                {
+                    password[r.Next(password.Length)] = numbers[r.Next(numbers.Length)];
+                }
+                if (!hasSymbol)
+                {
+                    password[r.Next(password.Length)] = symbols[r.Next(symbols.Length)];
+                }
+            }
+            
+            Console.WriteLine($"Password: {new string (password)}");
+        }
         public static void rps(string playerChoice)
             {
                 string[] choices = { "rock", "paper", "scissors" };
