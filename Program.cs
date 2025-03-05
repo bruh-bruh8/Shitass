@@ -11,9 +11,12 @@ namespace shitass
 {
     class Program
     {
-        const string version = "250223"; // current build (remember to update lol)
+        const string version = "250305"; // current build (remember to update lol)
         static async Task Main()
         {
+
+            donutUtil donut = new donutUtil();
+
             string user = Environment.UserName;
             string SettingsPath = $@"C:\Users\{user}\AppData\Roaming\Shitass\settings.txt";
             string FilePath = $@"C:\Users\{user}\AppData\Roaming\Shitass\";
@@ -25,7 +28,7 @@ namespace shitass
                 }
                 var settingfile = System.IO.File.Create(SettingsPath);
                 settingfile.Close();
-                string[] settings = { "version=250223", "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
+                string[] settings = { "version=" + version, "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
                 System.IO.File.WriteAllLines(SettingsPath, settings, Encoding.UTF8);
                 Console.WriteLine($"Created settings file at {SettingsPath}");
                 Thread.Sleep(3000);
@@ -34,7 +37,7 @@ namespace shitass
                 File.Delete(SettingsPath);
                 var settingfile = System.IO.File.Create(SettingsPath);
                 settingfile.Close();
-                string[] settings = { "version=250223", "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
+                string[] settings = { "version=" + version, "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
                 System.IO.File.WriteAllLines(SettingsPath, settings, Encoding.UTF8);
                 Console.WriteLine($"Old version detected, your settings may have been reset.");
                 Thread.Sleep(3000);
@@ -68,8 +71,8 @@ namespace shitass
                         " (__  ) / / / / /_/ /_/ (__  |__  ) \n" +
                         "/____/_/ /_/_/\\__/\\__,_/____/____/  \n" +
                         "                                    \n" +
-                        "Shitass b250220, " +
-                            "made by orange\n");
+                        "Shitass b" + version +
+                            ", made by orange\n");
                         break;
                     case "help":
                         if (args.Length <= 1)
@@ -77,7 +80,7 @@ namespace shitass
                             Console.WriteLine(
                                  "\n" +
                             "cmd - Info about the console\n" +
-                            "echo - Outputs text to the console" +
+                            "echo - Outputs text to the console\n" +
                             "help - Type \"help <command>\" for a more detailed explanation on any command\n" +
                             "driveinfo - Info on drives and removable media\n" +
                             "sysinfo - Info on your PC\n" +
@@ -90,7 +93,8 @@ namespace shitass
                             "cl - Clears the console\n" +
                             "color - Changes color of console elements\n" +
                             "ascii - Creates ascii text art\n" +
-                            "rps - Plays rock paper scissors\n"
+                            "rps - Plays rock paper scissors\n" +
+                            "donut - donut\n"
                                 );
                         }
                         else
@@ -151,6 +155,10 @@ namespace shitass
 
                                 case "rps":
                                     Console.WriteLine("rps\nPlays rock paper scissors");
+                                    break;
+
+                                case "donut":
+                                    Console.WriteLine("donut\ndonut");
                                     break;
 
                                 default:
@@ -492,6 +500,10 @@ namespace shitass
                         rps(args[1].ToLower());
                         break;
 
+                    case "donut":
+                        donutUtil.donut();
+                        break;
+
                     case "":
                         Console.WriteLine("");
                         break;
@@ -640,48 +652,17 @@ namespace shitass
                         break;
                 }
             }
-            bool hasUpper = false, hasLower = false, hasNumber = false, hasSymbol = false;
-            while (!hasUpper || !hasLower || !hasNumber || !hasSymbol)
-            {
-                foreach (char c in password)
-                {
-                    if (uppercase.Contains(c)) hasUpper = true;
-                    else if (lowercase.Contains(c)) hasLower = true;
-                    else if (numbers.Contains(c)) hasNumber = true;
-                    else if (symbols.Contains(c)) hasSymbol = true;
-                }
-                if (!hasUpper)
-                {
-                    password[r.Next(password.Length)] = uppercase[r.Next(uppercase.Length)];
-                }
-                if (!hasLower)
-                {
-                    password[r.Next(password.Length)] = lowercase[r.Next(lowercase.Length)];
-                }
-                if (!hasNumber)
-                {
-                    password[r.Next(password.Length)] = numbers[r.Next(numbers.Length)];
-                }
-                if (!hasSymbol)
-                {
-                    password[r.Next(password.Length)] = symbols[r.Next(symbols.Length)];
-                }
-            }
             
             Console.WriteLine($"Password: {new string (password)}");
         }
         public static void rps(string playerChoice)
+        {
+            string[] choices = { "rock", "paper", "scissors" };
+            Random rng = new Random();
+            string computerChoice = choices[rng.Next(choices.Length)];
+
+            if (Array.Exists(choices, choice => choice == playerChoice))
             {
-                string[] choices = { "rock", "paper", "scissors" };
-                Random rng = new Random();
-                string computerChoice = choices[rng.Next(choices.Length)];
-
-                if (!Array.Exists(choices, choice => choice == playerChoice))
-                {
-                    Console.WriteLine("Usage: rps <rock|paper|scissors>");
-                    return;
-                }
-
                 Console.WriteLine($"you chose {playerChoice}, i chose {computerChoice}");
 
                 if (playerChoice == computerChoice)
@@ -689,8 +670,8 @@ namespace shitass
                     Console.WriteLine("it's a tie");
                 }
                 else if ((playerChoice == "rock" && computerChoice == "scissors") ||
-                         (playerChoice == "paper" && computerChoice == "rock") ||
-                         (playerChoice == "scissors" && computerChoice == "paper"))
+                            (playerChoice == "paper" && computerChoice == "rock") ||
+                            (playerChoice == "scissors" && computerChoice == "paper"))
                 {
                     Console.WriteLine("you win");
                 }
@@ -699,5 +680,12 @@ namespace shitass
                     Console.WriteLine("you lose");
                 }
             }
+            else
+            {
+                Console.WriteLine("Usage: rps <rock|paper|scissors>");
+                return;
+            }
         }
+        
+    }
 }
