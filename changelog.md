@@ -1,5 +1,11 @@
-## Build 250223
+## Build 250305
+> *[+] Added donut*
 
+> *[/] Formatting fixes*
+
+> *[/] Fixed password*
+
+## Build 250223
 > *[+] Added password generator*
 
 > *[/] Settings file stuff*
