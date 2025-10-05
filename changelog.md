@@ -12,6 +12,13 @@ Build numbers follow the format YYMMDD.
 
 ### Changed
 - Commands now live in separate files for better organization
+- Restart command fixed
+- Sysinfo command has more info
+- Removed echo newlines
+- Title no longer requires a restart
+
+### Removed
+- Ascii text art generator because it sucked ass
 
 ---
 
