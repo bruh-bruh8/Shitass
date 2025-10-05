@@ -1,107 +1,138 @@
-## Build 250305
-> *[+] Added donut*
+# Changelog
 
-> *[/] Formatting fixes*
+All notable changes to shitass are documented here.  
+Build numbers follow the format YYMMDD.
 
-> *[/] Fixed password*
+---
 
-## Build 250223
-> *[+] Added password generator*
+## [251004] - 2025-10-04
+### Added
+- Dynamic command loading
+- Version checking against github pages
 
-> *[/] Settings file stuff*
+### Changed
+- Commands now live in separate files for better organization
 
-> *[/] Other bugfixes*
+---
 
-## Build 250218
+## [250305] - 2025-03-05
+### Added
+- Donut spinning animation command
 
-> *[+] Added ASCII Art generator*
+### Fixed
+- Password generator bug
+- Various formatting issues
 
-> *[+] Added rock paper scissors*
+---
 
-> *[/] Made delete command better*
+## [250223] - 2025-02-23
+### Added
+- Password generator command
 
-> *[/] Optimized ping and shorten*
+### Changed
+- Settings file handling improvements
 
-> *[/] Fixed crashes with color command*
+### Fixed
+- Various bug fixes
 
-> *[/] Aliases more efficient*
+---
 
-## Build 250217
+## [250218] - 2025-02-18
+### Added
+- ASCII art generator using external API
+- Rock paper scissors
+- Directory deletion support to `del` command
 
-> *[/] Builds are now named by date*
+### Changed
+- Optimized `ping` and `shorten` commands
+- Improved command alias handling
 
-> *[/] Added more information to the sysinfo command*
+### Fixed
+- Color command crashes
+- Drive info console clearing bug
 
-> *[/] Title command now works with spaces and saves after closing*
+---
 
-> *[+] Added the ability to reset the window title with title -reset*
+## [250217] - 2025-02-17
+### Added
+- Echo command
+- Color command for customizing console appearance
+- Window title reset functionality (`title -reset`)
+- Gigabyte display (from bytes) for drive info
 
-> *[/] The driveinfo command now gives gigabytes for total size and free space*
+### Changed
+- Build naming convention switched to date format (YYMMDD)
+- Enhanced sysinfo command with additional details
+- Title command now supports spaces and persists settings
+- Clear command preserves console branding
+- Improved error handling across multiple commands
+- Better fallback behavior in help system
 
-> *[/] Added fallback to advanced help*
+---
 
-> *[/] Fixed error handling for many commands*
+## [220309] - 2022-03-09
+### Fixed
+- High CPU usage in window title refresh
 
-> *[/] Fixed driveinfo clearing the console before displaying information*
+---
 
-> *[+] Added the color command*
+## [220308] - 2022-03-08
+### Removed
+- Time command (redundant functionality)
 
-> *[+] Added the echo command*
+### Changed
+- Optimized title refresh mechanism to reduce CPU usage
+- Reformatted changelog structure
 
-> *[/] Clear command now doesn't remove the console name*
+### Fixed
+- Title display bug
 
-> *[/] driveinfo now uses gigabytes instead of bytes*
+---
 
-> *[/] Saving is more efficient*
+## [220226] - 2022-02-26
+### Added
+- IPv6 support for ping command
+- Real-time date/time in window title
 
-## Build 220309
+---
 
-> *[/] Fixed very high power usage, for real this time*
+## [220110] - 2022-01-10
+### Added
+- v.gd as alternative URL shortener option
 
-## Build 220308
+---
 
-> *[-] Removed time command due to it being useless*
+## [210819] - 2021-08-19
+### Fixed
+- Sysinfo incorrectly reporting NT 6.0 on Windows 8.1+ (thanks [@plexthedev](https://github.com/plexthedev))
 
-> *[/] Fixed title bug*
+---
 
-> *[/] Made title more efficient (no more very high power usage :))*
+## [210720b] - 2021-07-20
+### Added
+- URL shortener (is.gd)
+- Time command
+- Coin flip command
 
-> *[/] Reformatted changelog*
+---
 
-## Build 220226
+## [210720a] - 2021-07-20
+### Added
+- Ping command with network diagnostics
 
-> *[+] Added IPv6 support to ping command*
+---
 
-> *[+] Added date and time in the window title*
+## [210718] - 2021-07-18
+### Added
+- File deletion command (`del`)
 
-## Build 220110
+### Changed
+- Improved help command formatting
 
-> *[+] Added v.gd as an alternate link shortener*
+---
 
-## Build 210819
-
-> *[/] Fixed sysinfo always saying NT 6.0 on 8.1+ (thx [plex](https://www.github.com/plexthedev))*
-
-## Build 210720b
-
-> *[+] Added url shortener*
-
-> *[+] Added time command*
-
-> *[+] Added coinflip*
-
-## Build 210720a
-
-> *[+] Added ping command*
-
-## Build 210718
-
-> *[+] Added del command*
-
-> *[/] Made help better*
-
-## Build 210708
-
-> *[+] Made the repo*
-
-> *[+] Added system info command*
+## [210708] - 2021-07-08
+### Added
+- Initial repository creation
+- System information command
+- Basic command structure
