@@ -4,6 +4,21 @@ All notable changes to shitass are documented here.
 Build numbers follow the format YYMMDD.
 
 ---
+## [251005] - 2025-10-05
+### Added
+- base64 command
+- calc command
+- hash command
+- port command
+- process command
+- settings command
+- Much more customization
+- Auto update downloading
+
+### Changed
+- More settings and less jank
+
+---
 
 ## [251004] - 2025-10-04
 ### Added
