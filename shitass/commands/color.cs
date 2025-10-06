@@ -35,7 +35,10 @@ namespace shitass
                     lines[3] = "fgcolor=white";
                     File.WriteAllLines(context.SettingsPath, lines);
                     Console.Clear();
-                    Console.WriteLine("shitass\n");
+                    if (context.Settings.ShowStartupMessage)
+                    {
+                        Console.WriteLine("shitass\n");
+                    }
                     Console.WriteLine("Reset console colors");
                     return Task.CompletedTask;
                 }
@@ -50,7 +53,10 @@ namespace shitass
                         lines[3] = "fgcolor=" + color;
                         File.WriteAllLines(context.SettingsPath, lines);
                         Console.Clear();
-                        Console.WriteLine("shitass\n");
+                        if (context.Settings.ShowStartupMessage)
+                        {
+                            Console.WriteLine("shitass\n");
+                        }
                         break;
 
                     case "background":
@@ -62,7 +68,10 @@ namespace shitass
                         Console.WriteLine("shitass\n");
                         Console.WriteLine($"Changed background color to {color}\n");
                         Console.Clear();
-                        Console.WriteLine("shitass\n");
+                        if (context.Settings.ShowStartupMessage)
+                        {
+                            Console.WriteLine("shitass\n");
+                        }
                         break;
 
                     case "preset":
@@ -75,7 +84,10 @@ namespace shitass
                                 lines[3] = "fgcolor=black";
                                 File.WriteAllLines(context.SettingsPath, lines);
                                 Console.Clear();
-                                Console.WriteLine("shitass\n");
+                                if (context.Settings.ShowStartupMessage)
+                                {
+                                    Console.WriteLine("shitass\n");
+                                }
                                 break;
 
                             case "dark":
@@ -85,7 +97,10 @@ namespace shitass
                                 lines[3] = "fgcolor=white";
                                 File.WriteAllLines(context.SettingsPath, lines);
                                 Console.Clear();
-                                Console.WriteLine("shitass\n");
+                                if (context.Settings.ShowStartupMessage)
+                                {
+                                    Console.WriteLine("shitass\n");
+                                }
                                 break;
 
                             case "hackerman":
@@ -96,7 +111,10 @@ namespace shitass
                                 lines[3] = "fgcolor=green";
                                 File.WriteAllLines(context.SettingsPath, lines);
                                 Console.Clear();
-                                Console.WriteLine("shitass\n");
+                                if (context.Settings.ShowStartupMessage)
+                                {
+                                    Console.WriteLine("shitass\n");
+                                }
                                 break;
                         }
                         break;

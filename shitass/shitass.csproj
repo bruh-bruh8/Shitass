@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\shitass.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="commands\base64.cs" />
+    <Compile Include="commands\calc.cs" />
+    <Compile Include="commands\port.cs" />
+    <Compile Include="commands\settings.cs" />
+    <Compile Include="commands\ps.cs" />
+    <Compile Include="commands\hash.cs" />
     <Compile Include="commands\ping.cs" />
     <Compile Include="commands\rps.cs" />
     <Compile Include="commands\restart.cs" />
@@ -61,6 +70,7 @@
     <Compile Include="commands\coin.cs" />
     <Compile Include="commands\help.cs" />
     <Compile Include="commands\echo.cs" />
+    <Compile Include="util\settingsHandler.cs" />
     <Compile Include="util\CommandRegistry.cs" />
     <Compile Include="util\donutUtil.cs" />
     <Compile Include="Program.cs" />
@@ -68,7 +78,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="changelog.md" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\shitass.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

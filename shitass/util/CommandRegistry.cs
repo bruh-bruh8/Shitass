@@ -10,7 +10,7 @@ namespace shitass
     {
         public string User { get; set; }
         public string SettingsPath { get; set; }
-        // Add other shared state here
+        public Settings Settings { get; set; }
     }
     public interface ICommand
     {

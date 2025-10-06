@@ -11,7 +11,7 @@ namespace shitass
 {
     class Program
     {
-        public const string version = "251004"; // current build (remember to update lol)
+        public const string version = "251005"; // current build (remember to update lol)
         private static string currentTitle = "shitass";
         private static readonly object titleLock = new object();
 
@@ -34,77 +34,91 @@ namespace shitass
 
         static async Task Main()
         {
-            string latestVersion = await GetLatestVersion();
-            if (latestVersion != null && latestVersion != version)
-            {
-                Console.WriteLine($"Update available! Latest: b{latestVersion} (You have: b{version})");
-                Console.WriteLine("Download at: https://github.com/bruh-bruh8/Shitass \n");
-                Thread.Sleep(3000);
-            }
-            donutUtil donut = new donutUtil();
 
             string user = Environment.UserName;
             string SettingsPath = $@"C:\Users\{user}\AppData\Roaming\Shitass\settings.txt";
-            string FilePath = $@"C:\Users\{user}\AppData\Roaming\Shitass\";
-            if (!System.IO.File.Exists(SettingsPath))
+            var settings = Settings.Load(SettingsPath);
+
+            // Only check for updates if enabled
+            if (settings.AutoCheckUpdates)
             {
-                if (!Directory.Exists(FilePath))
+                string latestVersion = await GetLatestVersion();
+                if (latestVersion != null && latestVersion != version)
                 {
-                    Directory.CreateDirectory(FilePath);
+                    Console.WriteLine($"Update available! Latest: b{latestVersion} (You have: b{version})");
+                    Console.Write("Download now? (y/n): ");
+
+                    string response = Console.ReadLine()?.ToLower();
+                    if (response == "y" || response == "yes")
+                    {
+                        string downloadPath = Path.Combine(
+                            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                            $"shitass-{latestVersion}.exe"
+                        );
+
+                        await DownloadLatestVersion(downloadPath);
+                        Console.WriteLine("\nPress any key to continue with current version...");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Download at: https://github.com/bruh-bruh8/Shitass \n");
+                        Thread.Sleep(2000);
+                    }
                 }
-                var settingfile = System.IO.File.Create(SettingsPath);
-                settingfile.Close();
-                string[] settings = { "version=" + version, "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
-                System.IO.File.WriteAllLines(SettingsPath, settings, Encoding.UTF8);
-                Console.WriteLine($"Created settings file at {SettingsPath}");
-                Thread.Sleep(3000);
             }
-            if (System.IO.File.ReadLines(SettingsPath).First().Split('=')[1] != version)
+
+            if (settings.Version != version)
             {
-                File.Delete(SettingsPath);
-                var settingfile = System.IO.File.Create(SettingsPath);
-                settingfile.Close();
-                string[] settings = { "version=" + version, "wintitle=shitass", "bgcolor=Black", "fgcolor=White" };
-                System.IO.File.WriteAllLines(SettingsPath, settings, Encoding.UTF8);
-                Console.WriteLine($"Old version detected, your settings may have been reset.");
+                Console.WriteLine($"You updated to Shitass b{version} from b{settings.Version}.\nThe changelog can be found at https://github.com/bruh-bruh8/Shitass/blob/main/changelog.md");
+                settings.Version = version;
+                settings.Save(SettingsPath);
                 Thread.Sleep(3000);
             }
+
+            var context = new CommandContext
+            {
+                User = user,
+                SettingsPath = SettingsPath,
+                Settings = settings
+            };
+
             var registry = new CommandRegistry();
             registry.AutoRegisterCommands();
 
             var helpCmd = new HelpCommand(registry);
             registry.RegisterCommand(helpCmd);
 
-            var context = new CommandContext
-            {
-                User = user,
-                SettingsPath = SettingsPath
-            };
-            string WinTitle = System.IO.File.ReadLines(SettingsPath).Skip(1).First().Split('=')[1];
-
             lock (titleLock)
             {
-                currentTitle = WinTitle;
+                currentTitle = settings.WindowTitle;
             }
 
-            Thread title = new Thread(() => RefreshWinTitle());
+            Thread title = new Thread(() => RefreshWinTitle(settings));
             title.IsBackground = true;
             title.Start();
 
-            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), System.IO.File.ReadLines(SettingsPath).Skip(2).First().Split('=')[1], true);
-            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), System.IO.File.ReadLines(SettingsPath).Skip(3).First().Split('=')[1], true);
+            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), settings.BackgroundColor, true);
+            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), settings.ForegroundColor, true);
 
             Console.Clear();
-            Console.WriteLine("shitass\n");
+            if (settings.ShowStartupMessage)
+            {
+                Console.WriteLine("shitass\n");
+            }
+
             while (true)
             {
+                string promptName = string.IsNullOrWhiteSpace(settings.PromptName)
+                    ? user
+                    : settings.PromptName;
 
-                Console.Write(user + "> ");
+                Console.Write($"{promptName}{settings.PromptSymbol} ");
 
                 string cmd;
                 cmd = Console.ReadLine();
 
-                string[] args = cmd.ToLower().Split(' ');
+                string[] args = cmd.Split(' ');
 
                 var command = registry.GetCommand(args[0]);
                 if (command != null)
@@ -124,7 +138,7 @@ namespace shitass
                 }
             }
         }
-        public static void RefreshWinTitle()
+        public static void RefreshWinTitle(Settings settings)
         {
             while (true)
             {
@@ -133,7 +147,32 @@ namespace shitass
                 {
                     titleToDisplay = currentTitle;
                 }
-                Console.Title = titleToDisplay + " | " + DateTime.Now;
+
+                if (settings.ShowTimeInTitle)
+                {
+                    string dateTime = "";
+                    switch (settings.TitleDateFormat.ToLower())
+                    {
+                        case "time":
+                            dateTime = DateTime.Now.ToString("HH:mm:ss");
+                            break;
+                        case "date":
+                            dateTime = DateTime.Now.ToString("yyyy-MM-dd");
+                            break;
+                        case "short":
+                            dateTime = DateTime.Now.ToString("HH:mm");
+                            break;
+                        default:  // full
+                            dateTime = DateTime.Now.ToString();
+                            break;
+                    }
+                    Console.Title = titleToDisplay + " | " + dateTime;
+                }
+                else
+                {
+                    Console.Title = titleToDisplay;
+                }
+
                 Thread.Sleep(50);
             }
         }
@@ -142,6 +181,33 @@ namespace shitass
             lock (titleLock)
             {
                 currentTitle = newTitle;
+            }
+        }
+        public static async Task DownloadLatestVersion(string downloadPath)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    Console.WriteLine("Downloading latest version...");
+
+                    
+                    string downloadUrl = "https://github.com/bruh-bruh8/Shitass/releases/latest/download/Shitass.exe";
+
+                    var response = await client.GetAsync(downloadUrl);
+                    response.EnsureSuccessStatusCode();
+
+                    byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
+                    File.WriteAllBytes(downloadPath, fileBytes);
+
+                    Console.WriteLine($"Downloaded to: {downloadPath}");
+                    Console.WriteLine("The new version will start when you close this window.");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Download failed: {e.Message}");
+                Console.WriteLine("You can manually download from: https://github.com/bruh-bruh8/Shitass");
             }
         }
     }

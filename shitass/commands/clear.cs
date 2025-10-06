@@ -13,7 +13,10 @@ namespace shitass
         public Task ExecuteAsync(string[] args, CommandContext context)
         {
             Console.Clear();
-            Console.WriteLine("shitass\n");
+            if (context.Settings.ShowStartupMessage)
+            {
+                Console.WriteLine("shitass\n");
+            }
             return Task.CompletedTask;
         }
     }
