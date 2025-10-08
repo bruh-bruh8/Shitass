@@ -1,29 +1,49 @@
 # Changelog
-
 All notable changes to shitass are documented here.  
 Build numbers follow the format YYMMDD.
 
 ---
-## [251005] - 2025-10-05
+
+## [251007] - 2025-10-07
 ### Added
-- base64 command
-- calc command
-- hash command
-- port command
-- process command
-- settings command
-- Much more customization
-- Auto update downloading
+- Cd command
+- List command for listing files and directories
+- Find command for searching files by pattern
+- Open command to launch files
+- Cat command to display file contents
+- Mkdir command to create directories
+- Whoami command
 
 ### Changed
+- Settings command simplified
+- File operations (del, hash, etc) now respect current directory from cd command
+- Boolean settings can be toggled by calling them without a value
+
+---
+
+## [251005] - 2025-10-05
+### Added
+- Calculator command with exponent support (^)
+- File hash calculator (MD5/SHA256)
+- Port checker to see what's using specific ports
+- Process manager (list/kill processes with warnings for critical processes)
+- Settings command
+
+### Changed
+- Color and title commands apply changes immediately without restart
 - More settings and less jank
+- Much more customization
+- Clear command respects startup message setting
+
+### Fixed
+- Command arguments now preserve capitalization
 
 ---
 
 ## [251004] - 2025-10-04
 ### Added
 - Dynamic command loading
-- Version checking against github pages
+- Version checking against GitHub Pages
 
 ### Changed
 - Commands now live in separate files for better organization
@@ -33,7 +53,7 @@ Build numbers follow the format YYMMDD.
 - Title no longer requires a restart
 
 ### Removed
-- Ascii text art generator because it sucked ass
+- ASCII text art generator because it sucked ass
 
 ---
 
@@ -80,7 +100,7 @@ Build numbers follow the format YYMMDD.
 - Echo command
 - Color command for customizing console appearance
 - Window title reset functionality (`title -reset`)
-- Gigabyte display (from bytes) for drive info
+- Gigabyte display for drive info
 
 ### Changed
 - Build naming convention switched to date format (YYMMDD)
@@ -99,15 +119,15 @@ Build numbers follow the format YYMMDD.
 ---
 
 ## [220308] - 2022-03-08
-### Removed
-- Time command (redundant functionality)
-
 ### Changed
 - Optimized title refresh mechanism to reduce CPU usage
 - Reformatted changelog structure
 
 ### Fixed
 - Title display bug
+
+### Removed
+- Time command (redundant functionality)
 
 ---
 
