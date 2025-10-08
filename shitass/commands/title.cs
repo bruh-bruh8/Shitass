@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 namespace shitass
 {
-
     class TitleCommand : ICommand
     {
         public string Name => "title";

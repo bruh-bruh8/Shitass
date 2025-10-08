@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace shitass
@@ -11,52 +9,46 @@ namespace shitass
         public string Name => "settings";
         public string[] Aliases => new string[] { "config", "set", "setting" };
         public string Description => "View or change settings";
-        public string Usage => "settings [list|get|set] [key] [value]";
+        public string Usage => "settings [key] [value]";
+
+        private static readonly string[] BooleanSettings = { "showtimeintitle", "showstartupmessage", "autocheckupdates" };
 
         public Task ExecuteAsync(string[] args, CommandContext context)
         {
             if (args.Length < 2)
             {
+                // formerly list/no args
                 ListSettings(context.Settings, context.User);
                 return Task.CompletedTask;
             }
 
-            string action = args[1].ToLower();
+            string key = args[1].ToLower();
 
-            switch (action)
+            if (args.Length < 3) // no more set
             {
-                case "list":
-                case "ls":
-                    ListSettings(context.Settings, context.User);
-                    break;
-
-                case "get":
-                    if (args.Length < 3)
-                    {
-                        Console.WriteLine("Usage: settings get <key>");
-                        break;
-                    }
-                    GetSetting(args[2], context.Settings);
-                    break;
-
-                case "set":
-                    if (args.Length < 3)
-                    {
-                        Console.WriteLine("Usage: settings set <key> [value]");
-                        break;
-                    }
-                    string key = args[2];
-                    string value = args.Length > 3 ? string.Join(" ", args.Skip(3)) : "";
-                    SetSetting(key, value, context);
-                    break;
-
-                default:
-                    Console.WriteLine("Invalid action. Use 'list', 'get', or 'set'.");
-                    break;
+                if (IsBooleanSetting(key))
+                {
+                    ToggleSetting(key, context);
+                }
+                else
+                {
+                    ShowSetting(key, context);
+                }
+            }
+            else
+            {
+                string value = string.Join(" ", args.Skip(2));
+                SetSetting(key, value, context);
             }
 
             return Task.CompletedTask;
         }
+
+        private bool IsBooleanSetting(string key)
+        {
+            return BooleanSettings.Contains(key);
+        }
+
         private void ListSettings(Settings settings, string user)
         {
             Console.WriteLine("\nCurrent Settings:");
@@ -72,30 +64,76 @@ namespace shitass
             Console.WriteLine();
         }
 
-        private void GetSetting(string key, Settings settings)
+        private void ShowSetting(string key, CommandContext context)
         {
-            switch (key.ToLower())
+            switch (key)
             {
+                case "wintitle":
+                case "windowtitle":
+                case "title":
+                    Console.WriteLine("Current window title: " + context.Settings.WindowTitle);
+                    Console.WriteLine("Usage: settings title <new title>");
+                    break;
+
+                case "bgcolor":
+                case "background":
+                    Console.WriteLine("Current background color: " + context.Settings.BackgroundColor);
+                    Console.WriteLine("Available colors: Black, White, Gray, DarkGray, Red, DarkRed, Blue, DarkBlue, Green, DarkGreen, Yellow, DarkYellow, Cyan, DarkCyan, Magenta, DarkMagenta");
+                    break;
+
+                case "fgcolor":
+                case "foreground":
+                case "textcolor":
+                    Console.WriteLine("Current text color: " + context.Settings.ForegroundColor);
+                    Console.WriteLine("Available colors: Black, White, Gray, DarkGray, Red, DarkRed, Blue, DarkBlue, Green, DarkGreen, Yellow, DarkYellow, Cyan, DarkCyan, Magenta, DarkMagenta");
+                    break;
+
                 case "promptname":
-                    Console.WriteLine(string.IsNullOrWhiteSpace(settings.PromptName) ? "(using real username)" : settings.PromptName);
+                    Console.WriteLine("Current prompt name: " + (string.IsNullOrWhiteSpace(context.Settings.PromptName) ? context.User : context.Settings.PromptName));
+                    Console.WriteLine("Usage: settings promptname <name>");
                     break;
+
                 case "promptsymbol":
-                    Console.WriteLine(settings.PromptSymbol);
+                    Console.WriteLine("Current prompt symbol: " + context.Settings.PromptSymbol);
+                    Console.WriteLine("Usage: settings promptsymbol <symbol> (e.g., >, $, #)");
                     break;
-                case "showtimeintitle":
-                    Console.WriteLine(settings.ShowTimeInTitle);
-                    break;
+
                 case "titledateformat":
-                    Console.WriteLine(settings.TitleDateFormat);
+                    Console.WriteLine("Current format: " + context.Settings.TitleDateFormat);
+                    Console.WriteLine("Available formats: full, time, date, short");
+                    Console.WriteLine("  full  - Complete date and time");
+                    Console.WriteLine("  time  - Time only (HH:mm:ss)");
+                    Console.WriteLine("  date  - Date only (yyyy-MM-dd)");
+                    Console.WriteLine("  short - Short time (HH:mm)");
                     break;
-                case "showstartupmessage":
-                    Console.WriteLine(settings.ShowStartupMessage);
-                    break;
-                case "autocheckupdates":
-                    Console.WriteLine(settings.AutoCheckUpdates);
-                    break;
+
                 default:
                     Console.WriteLine($"Unknown setting: {key}");
+                    Console.WriteLine("Use 'settings' to see all available settings.");
+                    break;
+            }
+        }
+
+        private void ToggleSetting(string key, CommandContext context)
+        {
+            switch (key)
+            {
+                case "showtimeintitle":
+                    context.Settings.ShowTimeInTitle = !context.Settings.ShowTimeInTitle;
+                    context.Settings.Save(context.SettingsPath);
+                    Console.WriteLine($"Show time in title: {context.Settings.ShowTimeInTitle}");
+                    break;
+
+                case "showstartupmessage":
+                    context.Settings.ShowStartupMessage = !context.Settings.ShowStartupMessage;
+                    context.Settings.Save(context.SettingsPath);
+                    Console.WriteLine($"Show startup message: {context.Settings.ShowStartupMessage}");
+                    break;
+
+                case "autocheckupdates":
+                    context.Settings.AutoCheckUpdates = !context.Settings.AutoCheckUpdates;
+                    context.Settings.Save(context.SettingsPath);
+                    Console.WriteLine($"Auto check updates: {context.Settings.AutoCheckUpdates}");
                     break;
             }
         }
@@ -104,17 +142,11 @@ namespace shitass
         {
             try
             {
-                switch (key.ToLower())
+                switch (key)
                 {
                     case "wintitle":
                     case "windowtitle":
                     case "title":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            Console.WriteLine("Current window title: " + context.Settings.WindowTitle);
-                            Console.WriteLine("Usage: settings set title <new title>");
-                            break;
-                        }
                         context.Settings.WindowTitle = value;
                         context.Settings.Save(context.SettingsPath);
                         Program.UpdateTitle(value);
@@ -123,29 +155,20 @@ namespace shitass
 
                     case "bgcolor":
                     case "background":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            Console.WriteLine("Current background color: " + context.Settings.BackgroundColor);
-                            Console.WriteLine("Available colors: Black, White, Gray, DarkGray, Red, DarkRed, Blue, DarkBlue, Green, DarkGreen, Yellow, DarkYellow, Cyan, DarkCyan, Magenta, DarkMagenta");
-                            break;
-                        }
                         Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), value, true);
                         context.Settings.BackgroundColor = value;
                         context.Settings.Save(context.SettingsPath);
                         Console.Clear();
-                        Console.WriteLine("shitass\n");
+                        if (context.Settings.ShowStartupMessage)
+                        {
+                            Console.WriteLine("shitass\n");
+                        }
                         Console.WriteLine($"Set background color to: {value}");
                         break;
 
                     case "fgcolor":
                     case "foreground":
                     case "textcolor":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            Console.WriteLine("Current text color: " + context.Settings.ForegroundColor);
-                            Console.WriteLine("Available colors: Black, White, Gray, DarkGray, Red, DarkRed, Blue, DarkBlue, Green, DarkGreen, Yellow, DarkYellow, Cyan, DarkCyan, Magenta, DarkMagenta");
-                            break;
-                        }
                         Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), value, true);
                         context.Settings.ForegroundColor = value;
                         context.Settings.Save(context.SettingsPath);
@@ -153,87 +176,44 @@ namespace shitass
                         break;
 
                     case "promptname":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            Console.WriteLine("Current prompt name: " + (string.IsNullOrWhiteSpace(context.Settings.PromptName) ? context.User : context.Settings.PromptName));
-                            Console.WriteLine("Usage: settings set promptname <name> (leave empty to use your username)");
-                            break;
-                        }
                         context.Settings.PromptName = value;
                         context.Settings.Save(context.SettingsPath);
                         Console.WriteLine($"Set prompt name to: {value}");
                         break;
 
                     case "promptsymbol":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            Console.WriteLine("Current prompt symbol: " + context.Settings.PromptSymbol);
-                            Console.WriteLine("Usage: settings set promptsymbol <symbol> (e.g., >, $, #)");
-                            break;
-                        }
                         context.Settings.PromptSymbol = value;
                         context.Settings.Save(context.SettingsPath);
                         Console.WriteLine($"Set prompt symbol to: {value}");
                         break;
 
                     case "titledateformat":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            Console.WriteLine("Current format: " + context.Settings.TitleDateFormat);
-                            Console.WriteLine("Available formats: full, time, date, short");
-                            Console.WriteLine("  full  - Complete date and time");
-                            Console.WriteLine("  time  - Time only (HH:mm:ss)");
-                            Console.WriteLine("  date  - Date only (yyyy-MM-dd)");
-                            Console.WriteLine("  short - Short time (HH:mm)");
-                            break;
-                        }
                         context.Settings.TitleDateFormat = value;
                         context.Settings.Save(context.SettingsPath);
                         Console.WriteLine($"Set title date format to: {value}");
                         break;
 
                     case "showtimeintitle":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            context.Settings.ShowTimeInTitle = !context.Settings.ShowTimeInTitle;
-                        }
-                        else
-                        {
-                            context.Settings.ShowTimeInTitle = value.ToLower() == "true";
-                        }
+                        context.Settings.ShowTimeInTitle = value.ToLower() == "true";
                         context.Settings.Save(context.SettingsPath);
                         Console.WriteLine($"Show time in title: {context.Settings.ShowTimeInTitle}");
                         break;
 
                     case "showstartupmessage":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            context.Settings.ShowStartupMessage = !context.Settings.ShowStartupMessage;
-                        }
-                        else
-                        {
-                            context.Settings.ShowStartupMessage = value.ToLower() == "true";
-                        }
+                        context.Settings.ShowStartupMessage = value.ToLower() == "true";
                         context.Settings.Save(context.SettingsPath);
                         Console.WriteLine($"Show startup message: {context.Settings.ShowStartupMessage}");
                         break;
 
                     case "autocheckupdates":
-                        if (string.IsNullOrWhiteSpace(value))
-                        {
-                            context.Settings.AutoCheckUpdates = !context.Settings.AutoCheckUpdates;
-                        }
-                        else
-                        {
-                            context.Settings.AutoCheckUpdates = value.ToLower() == "true";
-                        }
+                        context.Settings.AutoCheckUpdates = value.ToLower() == "true";
                         context.Settings.Save(context.SettingsPath);
                         Console.WriteLine($"Auto check updates: {context.Settings.AutoCheckUpdates}");
                         break;
 
                     default:
                         Console.WriteLine($"Unknown setting: {key}");
-                        Console.WriteLine("Use 'settings list' to see all available settings.");
+                        Console.WriteLine("Use 'settings' to see all available settings.");
                         break;
                 }
             }

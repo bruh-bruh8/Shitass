@@ -6,7 +6,7 @@ namespace shitass
     class DriveInfoCommand : ICommand
     {
         public string Name => "driveinfo";
-        public string[] Aliases => new string[] { "drives" };
+        public string[] Aliases => new string[] { "drives", "df"};
         public string Description => "Shows info on drives and removable media";
         public string Usage => "driveinfo";
         public Task ExecuteAsync(string[] args, CommandContext context)

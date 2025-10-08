@@ -49,6 +49,13 @@
   <ItemGroup>
     <Compile Include="commands\base64.cs" />
     <Compile Include="commands\calc.cs" />
+    <Compile Include="commands\cd.cs" />
+    <Compile Include="commands\cat.cs" />
+    <Compile Include="commands\whoami.cs" />
+    <Compile Include="commands\mkdir.cs" />
+    <Compile Include="commands\open.cs" />
+    <Compile Include="commands\find.cs" />
+    <Compile Include="commands\list.cs" />
     <Compile Include="commands\port.cs" />
     <Compile Include="commands\settings.cs" />
     <Compile Include="commands\ps.cs" />

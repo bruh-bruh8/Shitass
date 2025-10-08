@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
-namespace shitass.commands
+namespace shitass
 {
     public class HashCommand : ICommand
     {
@@ -23,8 +21,13 @@ namespace shitass.commands
                 return Task.CompletedTask;
             }
 
-            string filePath = args[1];
-            string algorithm = args.Length > 2 ? args[2].ToLower() : "sha256";
+            string filePath = string.Join(" ", args.Skip(1).Take(args.Length - (args.Length > 2 ? 2 : 1)));
+            string algorithm = args.Length > 2 ? args[args.Length - 1].ToLower() : "sha256";
+
+            if (!Path.IsPathRooted(filePath))
+            {
+                filePath = Path.Combine(Environment.CurrentDirectory, filePath);
+            }
 
             if (!File.Exists(filePath))
             {

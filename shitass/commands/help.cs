@@ -14,7 +14,7 @@ namespace shitass
         }
 
         public string Name => "help";
-        public string[] Aliases => new string[] { };
+        public string[] Aliases => new string[] { "man" };
         public string Description => "Shows available commands";
         public string Usage => "help [command]";
 

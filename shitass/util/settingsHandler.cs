@@ -14,6 +14,7 @@ namespace shitass
         public string TitleDateFormat { get; set; }
         public bool ShowStartupMessage { get; set; }
         public bool AutoCheckUpdates { get; set; }
+        public string CurrentDirectory { get; set; }
 
         public static Settings Load(string path)
         {

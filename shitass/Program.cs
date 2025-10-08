@@ -11,7 +11,7 @@ namespace shitass
 {
     class Program
     {
-        public const string version = "251005"; // current build (remember to update lol)
+        public const string version = "251007"; // current build (remember to update lol)
         private static string currentTitle = "shitass";
         private static readonly object titleLock = new object();
 
@@ -148,6 +148,11 @@ namespace shitass
                     titleToDisplay = currentTitle;
                 }
 
+                if (!string.IsNullOrWhiteSpace(settings.CurrentDirectory))
+                {
+                    titleToDisplay += $" - {settings.CurrentDirectory}";
+                }
+
                 if (settings.ShowTimeInTitle)
                 {
                     string dateTime = "";
@@ -162,7 +167,7 @@ namespace shitass
                         case "short":
                             dateTime = DateTime.Now.ToString("HH:mm");
                             break;
-                        default:  // full
+                        default:
                             dateTime = DateTime.Now.ToString();
                             break;
                     }

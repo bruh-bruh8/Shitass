@@ -8,7 +8,7 @@ namespace shitass
     public class DeleteCommand : ICommand
     {
         public string Name => "del";
-        public string[] Aliases => new string[] { "delete" };
+        public string[] Aliases => new string[] { "delete", "rm", "rmdir" };
         public string Description => "Deletes a file or directory";
         public string Usage => "del <path>";
 
@@ -29,11 +29,19 @@ namespace shitass
                 return Task.CompletedTask;
             }
 
-            string path = args[1];
+            string path = string.Join(" ", args.Skip(1));
 
             try
             {
+                // Make path relative to current directory if not absolute
+                if (!Path.IsPathRooted(path))
+                {
+                    path = Path.Combine(Environment.CurrentDirectory, path);
+                }
+
+                // Get absolute path for checking
                 string fullPath = Path.GetFullPath(path).ToLower();
+
 
                 bool isDangerous = DangerousPaths.Any(dangerous =>
                     fullPath.Contains(dangerous.ToLower()));
@@ -43,11 +51,11 @@ namespace shitass
                     Console.WriteLine("\n!!! WARNING !!!");
                     Console.WriteLine($"You're about to delete: {fullPath}");
                     Console.WriteLine("This looks like a system directory. Deleting this will likely break Windows.");
-                    Console.Write("\nType 'YES I KNOW WHAT IM DOING' to confirm: ");
+                    Console.Write("\nType 'I KNOW WHAT IM DOING' to confirm: ");
 
                     string confirmation = Console.ReadLine();
 
-                    if (confirmation != "YES I KNOW WHAT IM DOING")
+                    if (confirmation != "I KNOW WHAT IM DOING")
                     {
                         Console.WriteLine("Deletion cancelled");
                         return Task.CompletedTask;
